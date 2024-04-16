@@ -12,3 +12,8 @@ docs/
 
 # Dotenv file
 .env
+
+#Fuzzer corpuses
+medusa
+echidna
+

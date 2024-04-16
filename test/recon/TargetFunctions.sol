@@ -15,7 +15,7 @@ abstract contract TargetFunctions is
         counter.increment();
     }
 
-    function counter_setNumber(uint256 newNumber) public {
+    function counter_setNumber1(uint256 newNumber) public {
         // example assertion test replicating testFuzz_SetNumber
         try counter.setNumber(newNumber) {
             if (newNumber != 0) {
@@ -23,6 +23,19 @@ abstract contract TargetFunctions is
             }
         } catch {
             t(false, "setNumber reverts");
+        }
+    }
+
+    function counter_setNumber2(uint256 newNumber) public {
+        // same example assertion test as counter_setNumber1 using ghost variables
+        __before();
+
+        counter.setNumber(newNumber);
+
+        __after();
+
+        if (newNumber != 0) {
+            t(_after.counter_number == newNumber, "number != newNumber");
         }
     }
 }

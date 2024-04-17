@@ -1,66 +1,54 @@
-## Foundry
+## Create Chimera App
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+This Foundry template allows you to bootstrap a fuzz testing suite using a scaffolding provided by the [Recon](https://getrecon.xyz/) tool.
 
-Foundry consists of:
+It extends the default Foundry template used when running `forge init` to include example property tests using assertion tests and boolean property tests supported by [Echidna](https://github.com/crytic/echidna) and [Medusa](https://github.com/crytic/medusa).
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
-
-## Documentation
-
-https://book.getfoundry.sh/
+Broken properties can be turned into unit tests for easier debugging with Recon ([for Echidna](https://getrecon.xyz/tools/echidna)/[for Medusa](https://getrecon.xyz/tools/medusa)) and added to the `CryticToFoundry` contract.
 
 ## Usage
+To initialize a new Foundry repo using this template run the following command in the terminal.
+
+```shell
+forge init --template https://github.com/nican0r/create-chimera-app
+```
 
 ### Build
 
 ```shell
-$ forge build
+forge build
 ```
 
-### Test
+### Foundry Test
 
 ```shell
-$ forge test
+forge test
 ```
 
-### Format
+This will run all unit, fuzz and invariant tests in the `CounterTest` and `CryticToFoundry` contracts.
+
+### Echidna Property Test
 
 ```shell
-$ forge fmt
+echidna . --contract CryticTester --config echidna.yaml
 ```
+Assertion mode is enabled by default in the echidna.yaml config file meaning the fuzzer will check assertion and property tests. 
 
-### Gas Snapshots
+To test only in property mode enable `testMode: "property"` in [echidna.yaml](https://github.com/nican0r/create-chimera-app/blob/main/echidna.yaml).
+
+### Medusa Property Test
 
 ```shell
-$ forge snapshot
+medusa fuzz
+```
+Assertion mode is enabled by default in the medusa.json config file meaning the fuzzer will check assertion and property tests. 
+
+To test only in property mode disable assertion mode using:
+
+```json
+"assertionTesting": {
+    "enabled": true
+}  
 ```
 
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+in [medusa.json](https://github.com/nican0r/create-chimera-app/blob/main/medusa.json).

@@ -52,7 +52,7 @@
       "propertyTesting": {
         "enabled": true,
         "testPrefixes": [
-          "crytic_"
+          "invariant_"
         ]
       },
       "optimizationTesting": {

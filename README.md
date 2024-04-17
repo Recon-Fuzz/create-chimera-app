@@ -10,7 +10,7 @@ Broken properties can be turned into unit tests for easier debugging with Recon 
 To initialize a new Foundry repo using this template run the following command in the terminal.
 
 ```shell
-forge init --template https://github.com/nican0r/create-chimera-app
+forge init --template https://github.com/Recon-Fuzz/create-chimera-app
 ```
 
 ### Build
@@ -34,7 +34,7 @@ echidna . --contract CryticTester --config echidna.yaml
 ```
 Assertion mode is enabled by default in the echidna.yaml config file meaning the fuzzer will check assertion and property tests. 
 
-To test only in property mode enable `testMode: "property"` in [echidna.yaml](https://github.com/nican0r/create-chimera-app/blob/main/echidna.yaml).
+To test only in property mode enable `testMode: "property"` in [echidna.yaml](https://github.com/Recon-Fuzz/create-chimera-app/blob/main/echidna.yaml)).
 
 ### Medusa Property Test
 
@@ -51,4 +51,4 @@ To test only in property mode disable assertion mode using:
 }  
 ```
 
-in [medusa.json](https://github.com/nican0r/create-chimera-app/blob/main/medusa.json).
+in [medusa.json](https://github.com/Recon-Fuzz/create-chimera-app/blob/main/medusa.json).

@@ -13,7 +13,7 @@ docs/
 # Dotenv file
 .env
 
-#Fuzzer corpuses
+#Fuzzers
 medusa
 echidna
-
+crytic-export

@@ -9,6 +9,8 @@ import "forge-std/console2.sol";
 contract CryticToFoundry is Test, TargetFunctions, FoundryAsserts {
     function setUp() public {
         setup();
+
+        targetContract(address(counter));
     }
 
     function test_crytic() public {

@@ -6,5 +6,6 @@ remappings = [
   'forge-std/=lib/forge-std/src/',
   '@chimera/=lib/chimera/src/'
 ]
+no_match_contract = "CryticTester"
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options

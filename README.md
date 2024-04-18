@@ -3,9 +3,9 @@
 
 - [Usage](#usage)
 - [Build](#build)
-- [Foundry Testing](#foundry-test)
-- [Echidna Property Testing](#echidna-property-test)
-- [Medusa Property Testing](#medusa-property-test)
+- [Foundry Testing](#foundry-testing)
+- [Echidna Property Testing](#echidna-property-testing)
+- [Medusa Property Testing](#medusa-property-testing)
 - [Uploading Fuzz Job To Recon](#uploading-fuzz-job-to-recon)
 
 This Foundry template allows you to bootstrap a fuzz testing suite using a scaffolding provided by the [Recon](https://getrecon.xyz/) tool.

@@ -43,7 +43,6 @@ abstract contract TargetFunctions is
     function check_Increment(uint256 newNumber) public {
         counter.setNumber(newNumber);
         if (newNumber != 0) {
-            // NOTE: halmos doesn't currently support cheatcodes used in assertEq, so we need to use normal assertion
             eq(
                 counter.number(),
                 newNumber,

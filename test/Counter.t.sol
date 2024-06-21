@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
+import {Asserts} from "@chimera/Asserts.sol";
 import {Test, console} from "forge-std/Test.sol";
+
 import {Counter} from "../src/Counter.sol";
 
 contract CounterTest is Test {
@@ -11,15 +13,26 @@ contract CounterTest is Test {
         counter = new Counter();
     }
 
+    /// @notice foundry unit test
     function test_Increment() public {
         counter.increment();
         assertEq(counter.number(), 2);
     }
 
-    function testFuzz_SetNumber(uint256 x) public {
-        counter.setNumber(x);
-        if (x != 0) {
-            assertEq(counter.number(), x);
+    /// @notice foundry fuzz test
+    function testFuzz_SetNumber(uint256 newNumber) public {
+        counter.setNumber(newNumber);
+        if (newNumber != 0) {
+            assertEq(counter.number(), newNumber);
+        }
+    }
+
+    /// @notice halmos symbolic execution test
+    function check_Increment(uint256 newNumber) public {
+        counter.setNumber(newNumber);
+        if (newNumber != 0) {
+            // NOTE: halmos doesn't currently support cheatcodes used in assertEq, so we need to use normal assertion
+            assert(counter.number() != 0);
         }
     }
 }

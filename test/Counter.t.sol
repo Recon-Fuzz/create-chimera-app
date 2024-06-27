@@ -26,13 +26,4 @@ contract CounterTest is Test {
             assertEq(counter.number(), newNumber);
         }
     }
-
-    /// @notice halmos symbolic execution test
-    function check_Increment(uint256 newNumber) public {
-        counter.setNumber(newNumber);
-        if (newNumber != 0) {
-            // NOTE: halmos doesn't currently support cheatcodes used in assertEq, so we need to use normal assertion
-            assert(counter.number() != 0);
-        }
-    }
 }

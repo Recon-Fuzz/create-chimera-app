@@ -13,7 +13,7 @@ contract CryticToFoundry is Test, TargetFunctions, FoundryAsserts {
         targetContract(address(counter));
     }
 
-    function test_crytic() public {
-        // TODO: add failing property tests here for debugging
-    }
+    // function test_crytic() public {
+    //     // TODO: add failing property tests here for debugging
+    // }
 }

@@ -41,13 +41,6 @@ abstract contract TargetFunctions is
 
     /// @notice halmos symbolic execution test
     function check_Increment(uint256 newNumber) public {
-        counter.setNumber(newNumber);
-        if (newNumber != 0) {
-            eq(
-                counter.number(),
-                newNumber,
-                "counter number doesn't change as expected"
-            );
-        }
+        counter_setNumber1(newNumber);
     }
 }

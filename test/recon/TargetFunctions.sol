@@ -19,7 +19,7 @@ abstract contract TargetFunctions is
         // example assertion test replicating testFuzz_SetNumber
         try counter.setNumber(newNumber) {
             if (newNumber != 0) {
-                t(counter.number() == newNumber, "number != newNumber");
+                eq(counter.number(), newNumber, "number != newNumber");
             }
         } catch {
             t(false, "setNumber reverts");
@@ -40,7 +40,7 @@ abstract contract TargetFunctions is
     }
 
     /// @notice halmos symbolic execution test
-    function check_Increment(uint256 newNumber) public {
-        counter_setNumber1(newNumber);
-    }
+    // function check_Increment(uint256 newNumber) public {
+    //     counter_setNumber1(newNumber);
+    // }
 }

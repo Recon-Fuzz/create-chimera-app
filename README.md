@@ -6,6 +6,7 @@
 - [Foundry Testing](#foundry-testing)
 - [Echidna Property Testing](#echidna-property-testing)
 - [Medusa Property Testing](#medusa-property-testing)
+- [Halmos Symbolic Execution Testing](#halmos-symbolic-exection)
 - [Uploading Fuzz Job To Recon](#uploading-fuzz-job-to-recon)
 
 This Foundry template allows you to bootstrap a fuzz testing suite using a scaffolding provided by the [Recon](https://getrecon.xyz/) tool.
@@ -60,6 +61,16 @@ To test only in property mode disable assertion mode using:
 ```
 
 in [medusa.json](https://github.com/Recon-Fuzz/create-chimera-app/blob/main/medusa.json).
+
+### Halmos Symbolic Exection
+
+Halmos uses symbolic execution to evaluate test cases for all possible input values.See more about this [here](https://github.com/a16z/halmos).
+
+To run halmos:
+
+```shell
+halmos --mc HalmosTester
+```
 
 ## Uploading Fuzz Job To Recon
 

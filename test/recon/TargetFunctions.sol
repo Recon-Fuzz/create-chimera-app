@@ -40,7 +40,7 @@ abstract contract TargetFunctions is
     }
 
     /// @notice halmos symbolic execution test
-    // function check_Increment(uint256 newNumber) public {
-    //     counter_setNumber1(newNumber);
-    // }
+    function check_Increment(uint256 newNumber) public {
+        counter_setNumber1(newNumber);
+    }
 }

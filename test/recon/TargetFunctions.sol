@@ -17,13 +17,15 @@ abstract contract TargetFunctions is
 
     function counter_setNumber1(uint256 newNumber) public {
         // example assertion test replicating testFuzz_SetNumber
-        try counter.setNumber(newNumber) {
-            if (newNumber != 0) {
-                t(counter.number() == newNumber, "number != newNumber");
-            }
-        } catch {
-            t(false, "setNumber reverts");
-        }
+        // try counter.setNumber(newNumber) {
+        //     if (newNumber != 0) {
+        //         t(counter.number() == newNumber, "number != newNumber");
+        //     }
+        // } catch {
+        //     t(false, "setNumber reverts");
+        // }
+        counter.setNumber(newNumber);
+        t(counter.number() == newNumber, "number != newNumber");
     }
 
     function counter_setNumber2(uint256 newNumber) public {

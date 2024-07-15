@@ -40,22 +40,22 @@ This will run all unit, fuzz and invariant tests in the `CounterTest` and `Cryti
 ```shell
 echidna . --contract CryticTester --config echidna.yaml
 ```
-Assertion mode is enabled by default in the echidna.yaml config file meaning the fuzzer will check assertion and property tests. 
+Assertion mode is enabled by default in the echidna.yaml config file.
 
-To test only in property mode enable `testMode: "property"` in [echidna.yaml](https://github.com/Recon-Fuzz/create-chimera-app/blob/main/echidna.yaml)).
+To test in property mode enable `testMode: "property"` in [echidna.yaml](https://github.com/Recon-Fuzz/create-chimera-app/blob/main/echidna.yaml)).
 
 ### Medusa Property Testing
 
 ```shell
 medusa fuzz
 ```
-Assertion mode is enabled by default in the medusa.json config file meaning the fuzzer will check assertion and property tests. 
+Assertion and property mode are enabled by default in the medusa.json config file meaning the fuzzer will check assertion and property tests. 
 
 To test only in property mode disable assertion mode using:
 
 ```json
 "assertionTesting": {
-    "enabled": true
+    "enabled": false
 }  
 ```
 

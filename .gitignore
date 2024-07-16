@@ -14,7 +14,11 @@ docs/
 # Dotenv file
 .env
 
-#Fuzzers
+# Fuzzers
 medusa
 echidna
 crytic-export
+cloudexec.toml
+
+# Halmos
+halmos-output.json

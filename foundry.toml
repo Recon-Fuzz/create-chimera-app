@@ -3,5 +3,10 @@ src = "src"
 out = "out"
 libs = ["lib"]
 no_match_contract = "CryticTester"
+remappings = [
+    "forge-std/=lib/forge-std/src/",
+    "@chimera/=lib/chimera/src/",
+    "halmos-cheatcodes=lib/halmos-cheatcodes/src/"
+]
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options

@@ -72,6 +72,10 @@ To run halmos:
 halmos --mc HalmosTester
 ```
 
+The two halmos tests implemented in `TargetFunctions` define stateless and stateful property tests, `check_increment` and `check_counter_symbolic`, respectively.
+
+For more about stateful property testing using halmos, see [this](https://a16zcrypto.com/posts/article/implementing-stateful-invariant-testing-with-halmos/) article.
+
 ## Uploading Fuzz Job To Recon
 
 You can offload your fuzzing job to Recon to run long duration jobs and share test results with collaborators using the [jobs page](https://getrecon.xyz/dashboard/jobs) on Recon:

@@ -49,21 +49,28 @@ abstract contract TargetFunctions is
      Halmos Symobolic Execution Tests
     */
     ///@notice checks an individual target function
-    // TODO: change this to call contract directly and add an assertion
-    function check_Increment(uint256 newNumber) public {
-        counter_setNumber1(newNumber);
+    function check_increment(uint256 newNumber) public {
+        assumeSuccessfulCall(
+            address(counter),
+            calldataFor(counter.setNumber.selector, newNumber)
+        );
+
+        if (newNumber != 0) {
+            eq(counter.number(), newNumber, "number != newNumber");
+        }
     }
 
     ///@notice stateful symbolic execution test
+    ///@dev executes calls to multiple functions in the target contract then makes an assertion
     function check_counter_symbolic(
         bytes4[] memory selectors,
-        uint256 newValue
+        uint256 newNumber
     ) public {
         for (uint256 i = 0; i < selectors.length; ++i) {
             assumeValidSelector(selectors[i]);
             assumeSuccessfulCall(
                 address(counter),
-                calldataFor(selectors[i], newValue)
+                calldataFor(selectors[i], newNumber)
             );
         }
 

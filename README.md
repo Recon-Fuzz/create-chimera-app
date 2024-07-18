@@ -69,12 +69,12 @@ Halmos uses symbolic execution to evaluate test cases for all possible input val
 To run halmos:
 
 ```shell
-halmos --mc HalmosTester
+halmos --contract CryticTester
 ```
 
 The two halmos tests implemented in `TargetFunctions` define stateless and stateful property tests, `check_increment` and `check_counter_symbolic`, respectively.
 
-For more about stateful property testing using halmos, see [this](https://a16zcrypto.com/posts/article/implementing-stateful-invariant-testing-with-halmos/) article.
+In its normal usage, Halmos performs stateless symbolic execution on individual functions, however it can also be used for stateful invariant testing as is shown in the `check_counter_symbolic` function which uses symbolic values to call multiple target functions based on their selectors. This implementation is based on the example shown [here](https://a16zcrypto.com/posts/article/implementing-stateful-invariant-testing-with-halmos/).
 
 ## Uploading Fuzz Job To Recon
 

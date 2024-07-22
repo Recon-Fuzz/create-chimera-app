@@ -2,7 +2,7 @@ name: Echidna Test
 
 on:
   push:
-    branches: [ main ]
+    branches: [ github-ci-test ]
   pull_request:
     branches: [ main ]
 

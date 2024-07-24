@@ -15,20 +15,20 @@ abstract contract HalmosTargetFunctions is
     SymTest
 {
     ///@notice checks an individual target function
-    function check_increment(uint256 newNumber) public {
+    function invariant_increment(uint256 newNumber) public {
         assumeSuccessfulCall(
             address(counter),
             calldataFor(counter.setNumber.selector, newNumber)
         );
 
-        if (newNumber != 0) {
-            eq(counter.number(), newNumber, "number != newNumber");
-        }
+        // if (newNumber != 0) {
+        eq(counter.number(), newNumber, "number != newNumber");
+        // }
     }
 
     ///@notice stateful symbolic execution test
     ///@dev executes calls to multiple functions in the target contract then makes an assertion
-    function check_counter_symbolic(
+    function invariant_counter_symbolic(
         bytes4[] memory selectors,
         uint256 newNumber
     ) public {

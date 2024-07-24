@@ -69,7 +69,7 @@ Halmos uses symbolic execution to evaluate test cases for all possible input val
 To run halmos:
 
 ```shell
-halmos --contract CryticTester
+halmos --contract CryticTester --function invariant -vvv  
 ```
 
 The two halmos tests implemented in `TargetFunctions` define stateless and stateful property tests, `check_increment` and `check_counter_symbolic`, respectively.

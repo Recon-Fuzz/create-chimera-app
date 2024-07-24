@@ -6,6 +6,7 @@
 - [Foundry Testing](#foundry-testing)
 - [Echidna Property Testing](#echidna-property-testing)
 - [Medusa Property Testing](#medusa-property-testing)
+- [Halmos Symbolic Execution Testing](#halmos-symbolic-exection)
 - [Uploading Fuzz Job To Recon](#uploading-fuzz-job-to-recon)
 
 This Foundry template allows you to bootstrap a fuzz testing suite using a scaffolding provided by the [Recon](https://getrecon.xyz/) tool.
@@ -60,6 +61,20 @@ To test only in property mode disable assertion mode using:
 ```
 
 in [medusa.json](https://github.com/Recon-Fuzz/create-chimera-app/blob/main/medusa.json).
+
+### Halmos Symbolic Exection
+
+Halmos uses symbolic execution to evaluate test cases for all possible input values.See more about this [here](https://github.com/a16z/halmos).
+
+To run halmos:
+
+```shell
+halmos --contract CryticTester --function invariant -vvv  
+```
+
+The two halmos tests implemented in `TargetFunctions` define stateless and stateful property tests, `check_increment` and `check_counter_symbolic`, respectively.
+
+In its normal usage, Halmos performs stateless symbolic execution on individual functions, however it can also be used for stateful invariant testing as is shown in the `check_counter_symbolic` function which uses symbolic values to call multiple target functions based on their selectors. This implementation is based on the example shown [here](https://a16zcrypto.com/posts/article/implementing-stateful-invariant-testing-with-halmos/).
 
 ## Uploading Fuzz Job To Recon
 

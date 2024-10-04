@@ -8,9 +8,18 @@ import "forge-std/console2.sol";
 
 contract CryticToFoundry is Test, TargetFunctions, FoundryAsserts {
     function setUp() public {
-        setup();
+        bool fork = true; // use this to toggle between local and forked setup
 
-        targetContract(address(counter));
+        setup(fork);
+
+        if(fork) {
+            // add your rpc url to the .env file to run tests using a forked chain state
+            string memory forkRpc = vm.envString("MAINNET_RPC_URL");
+
+            // create a fork from the given rpc url at the block number set in Setup contract
+            vm.createSelectFork(forkRpc, BLOCK_NUMBER);
+        }
+        
     }
 
     function test_crytic() public {

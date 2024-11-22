@@ -8,8 +8,7 @@ import {vm} from "@chimera/Hevm.sol";
 
 abstract contract TargetFunctions is
     BaseTargetFunctions,
-    Properties,
-    BeforeAfter
+    Properties
 {
     function counter_increment() public {
         counter.increment();

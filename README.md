@@ -8,7 +8,7 @@
 - [Medusa Property Testing](#medusa-property-testing)
 - [Uploading Fuzz Job To Recon](#uploading-fuzz-job-to-recon)
 
-This Foundry template allows you to bootstrap a fuzz testing suite using a scaffolding provided by the [Recon](https://getrecon.xyz/) tool.
+This Foundry template allows you to bootstrap a fuzz testing suite using a scaffolding provided by the [Recon](https://getrecon.xyz/tools/sandbox) tool.
 
 It extends the default Foundry template used when running `forge init` to include example property tests using assertion tests and boolean property tests supported by [Echidna](https://github.com/crytic/echidna) and [Medusa](https://github.com/crytic/medusa).
 
@@ -60,6 +60,14 @@ To test only in property mode disable assertion mode using:
 ```
 
 in [medusa.json](https://github.com/Recon-Fuzz/create-chimera-app/blob/main/medusa.json).
+
+## Expanding Target Functions
+
+Once you wrote your Smart Contract, you can grab it's ABI and paste it here in Recon's Sandbox: https://getrecon.xyz/tools/sandbox
+
+This will generate a new `TargetFunctions` file with all the updated handlers
+
+You can combine multiple Target Function files to target different contracts and quickly reach coverage
 
 ## Uploading Fuzz Job To Recon
 

@@ -63,7 +63,7 @@ in [medusa.json](https://github.com/Recon-Fuzz/create-chimera-app/blob/main/medu
 
 ## Expanding Target Functions
 
-Once you wrote your Smart Contract, you can grab it's ABI and paste it here in Recon's Sandbox: https://getrecon.xyz/tools/sandbox
+Once you write your Smart Contract, you can grab it's ABI and paste it here in Recon's Sandbox: https://getrecon.xyz/tools/sandbox
 
 This will generate a new `TargetFunctions` file with all the updated handlers
 

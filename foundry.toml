@@ -4,4 +4,6 @@ out = "out"
 libs = ["lib"]
 no_match_contract = "CryticTester"
 
+optimizer=false ## Required by Crytic-Comile
+
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options

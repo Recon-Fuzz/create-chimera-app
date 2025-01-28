@@ -23,7 +23,7 @@ abstract contract DoomsdayTargets is
         try counter.increment() {
 
         } catch {
-
+            t(false, "doomsday_increment_never_reverts");
         }
     }
 

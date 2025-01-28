@@ -33,16 +33,6 @@ abstract contract AssetManager {
         return __asset;
     }
 
-    // Note: returns an asset different from the currently set one
-    function _getDifferentAsset() internal view returns (address differentAsset) {
-        address[] memory assets_ = _getAssets();
-        for(uint256 i; i < assets_.length; i++) {
-            if(assets_[i] != __asset) {
-                differentAsset = assets_[i];
-            }
-        }
-    }
-
     function _getAssets() internal view returns (address[] memory) {
         return _assets.values();
     }
@@ -84,6 +74,8 @@ abstract contract AssetManager {
         address target = _assets.at(entropy % _assets.length());
         _enableAsset(target);
     }
+
+    /// === Approve and mint for all === ///
 
     // mint initial balance and approve allowances for the active asset
     function _finalizeAssetDeployment(address[] memory actorsArray, address[] memory approvalArray, uint256 amount) internal {

@@ -15,6 +15,8 @@ import "src/Counter.sol";
 abstract contract Setup is BaseSetup, ActorManager, AssetManager {
     Counter counter;
 
+    /// === Setup === ///
+    /// This contains all calls to be performed in the tester constructor, both for Echidna and Foundry
     function setup() internal virtual override {
         // New Actor, beside address(this)
         _addActor(address(0x411c3));
@@ -24,6 +26,9 @@ abstract contract Setup is BaseSetup, ActorManager, AssetManager {
 
         // TODO: Standardize Mint and allowances to all actors
     }
+
+
+    /// === Actor Modifiers === ///
 
     // NOTE: LIMITATION You can use these modifier only for one call, so use them for BASIC TARGETS
     modifier asAdmin {

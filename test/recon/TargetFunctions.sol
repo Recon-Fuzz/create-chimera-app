@@ -7,10 +7,12 @@ import {vm} from "@chimera/Hevm.sol";
 // Targets
 // NOTE: Always import and apply them in alphabetical order, so much easier to debug!
 import {AdminTargets} from "./targets/AdminTargets.sol";
+import {DoomsdayTargets} from "./targets/DoomsdayTargets.sol";
 import {ManagersTargets} from "./targets/ManagersTargets.sol";
 
 abstract contract TargetFunctions is
     AdminTargets,
+    DoomsdayTargets,
     ManagersTargets
 {
     function counter_increment() public updateGhosts asActor {

@@ -6,6 +6,7 @@ import {TargetFunctions} from "./TargetFunctions.sol";
 import {FoundryAsserts} from "@chimera/FoundryAsserts.sol";
 import "forge-std/console2.sol";
 
+// forge test --match-contract CryticToFoundry -vv
 contract CryticToFoundry is Test, TargetFunctions, FoundryAsserts {
     function setUp() public {
         setup();
@@ -13,6 +14,7 @@ contract CryticToFoundry is Test, TargetFunctions, FoundryAsserts {
         targetContract(address(counter));
     }
 
+    // forge test --match-test test_crytic -vvv
     function test_crytic() public {
         // TODO: add failing property tests here for debugging
     }

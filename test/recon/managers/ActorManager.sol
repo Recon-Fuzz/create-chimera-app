@@ -42,21 +42,6 @@ abstract contract ActorManager {
        return _actor;
     }
 
-    // returns an actor different from the currently set one
-    function _getDifferentActor() internal view returns (address differentActor) {
-        address[] memory actors_ = _getActors();
-        for(uint256 i; i < actors_.length; i++) {
-            if(actors_[i] != _actor) {
-                differentActor = actors_[i];
-            }
-        }
-    }
-
-    function _getRandomActor(uint256 entropy) internal view returns (address randomActor) {
-        address[] memory actorsArray = _getActors();
-        randomActor = actorsArray[entropy % actorsArray.length];
-    }
-
     // Get regular users
     function _getActors() internal view returns (address[] memory) {
         return _actors.values();

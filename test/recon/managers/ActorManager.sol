@@ -32,11 +32,6 @@ abstract contract ActorManager {
         _actor = address(this);
     }
 
-    modifier useActor() {
-        vm.prank(_getActor());
-        _;
-    }
-
     // use this function to get the current active actor
     function _getActor() internal view returns (address) {
        return _actor;

@@ -7,6 +7,8 @@
 - [Echidna Property Testing](#echidna-property-testing)
 - [Medusa Property Testing](#medusa-property-testing)
 - [Uploading Fuzz Job To Recon](#uploading-fuzz-job-to-recon)
+- [On-Chain Fuzzing with Echidna and Chimera](#on-chain-fuzzing-with-echidna-and-chimera)
+
 
 This Foundry template allows you to bootstrap a fuzz testing suite using a scaffolding provided by the [Recon](https://getrecon.xyz/tools/sandbox) tool.
 
@@ -112,4 +114,88 @@ You can offload your fuzzing job to Recon to run long duration jobs and share te
 <div align="center">
     <img src="https://github.com/Recon-Fuzz/create-chimera-app/assets/94120714/dd49627a-5875-4ed2-a59c-c02976a4562a">
 </div>
-  
+
+# On-Chain Fuzzing with Echidna and Chimera
+
+## Introduction
+
+In this tutorial, you will learn how to start fuzzing on-chain targets very fast using Chimera and Echidna. Foundry is needed to generate the create-chimera-app template, to bootstrap a fuzz testing suite very fast.
+
+## Step-by-Step Guide
+
+### 1. Create Foundry Project with Chimera Template
+```bash
+forge init --template https://github.com/Recon-Fuzz/create-chimera-app onchain_fuzz
+```
+
+### 2. Generate Target Contract Interface
+For example, generating UniswapV2Router interface:
+```bash
+cast interface 0xf164fC0Ec4E93095b804a4795bBe1e041497b92a -o src/ITarget.sol -c 1 -e {ETHERSCAN_API_KEY}
+```
+Notes:
+- `-c 1` represents mainnet chain ID
+- `-e` requires Etherscan API key (signup at Etherscan)
+- Alternative: Manually create interface if preferred
+
+### 3. Modify Interface and Setup
+#### Update ITarget.sol
+```diff
+// SPDX-License-Identifier: UNLICENSED
+pragma solidity ^0.8.4;
+
+-interface UniswapV2Router01 {
++interface ITarget {
+    receive() external payable;
+    // ... rest of the interface
+}
+```
+
+#### Update Setup.sol
+```diff
+// SPDX-License-Identifier: GPL-2.0
+pragma solidity ^0.8.0;
+
+import {BaseSetup} from "@chimera/BaseSetup.sol";
+-import "src/Counter.sol";
++import "src/ITarget.sol";
+
+abstract contract Setup is BaseSetup {
+-    Counter counter;
++    ITarget target;
+
+    function setup() internal virtual override {
+-        counter = new Counter();
++        target = ITarget(payable(0xf164fC0Ec4E93095b804a4795bBe1e041497b92a));
+    }
+}
+```
+
+### 4. Update Echidna Configuration
+Modify `echidna.yaml` to add RPC URL and optional block:
+```yaml
+rpcUrl: https://rpc.ankr.com/eth
+rpcBlock: 21780400  # Optional: specific block for forking
+```
+
+### 5. Generate Target Functions
+1. Retrieve contract ABI from explorer
+2. Use [Recon Sandbox](https://getrecon.xyz/tools/sandbox) to generate targetfunctions
+3. Copy generated functions to `TargetFunctions.sol` (**remove the existing functions**)
+
+### 6. Project Clean-up
+- In `Properties.sol`: Delete existing functions
+- In `CryticToFoundry.sol`: Change `targetContract(address(counter))` to `targetContract(address(target))`
+- In `BeforeAfter.sol`: Clear body of `__before()` and `__after()` functions
+
+### 7. Run Echidna Fuzzing
+```bash
+echidna . --contract CryticTester --config echidna.yaml
+```
+
+### 8. Advanced Testing (Optional)
+Expand your fuzzing capabilities:
+- Introduce invariants/properties
+- Add checks and actors
+- Implement ghost variables
+- Iterate to discover potential vulnerabilities

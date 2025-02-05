@@ -7,7 +7,7 @@
 - [Echidna Property Testing](#echidna-property-testing)
 - [Medusa Property Testing](#medusa-property-testing)
 - [Uploading Fuzz Job To Recon](#uploading-fuzz-job-to-recon)
-- [On-Chain Fuzzing with Echidna and Chimera](#on-chain-fuzzing-with-echidna-and-chimera)
+- [Forked Fuzzing with Echidna and Chimera](#forked-fuzzing-with-echidna-and-chimera)
 
 
 This Foundry template allows you to bootstrap a fuzz testing suite using a scaffolding provided by the [Recon](https://getrecon.xyz/tools/sandbox) tool.
@@ -115,13 +115,7 @@ You can offload your fuzzing job to Recon to run long duration jobs and share te
     <img src="https://github.com/Recon-Fuzz/create-chimera-app/assets/94120714/dd49627a-5875-4ed2-a59c-c02976a4562a">
 </div>
 
-# On-Chain Fuzzing with Echidna and Chimera
-
-## Introduction
-
-In this tutorial, you will learn how to start fuzzing on-chain targets very fast using Chimera and Echidna. Foundry is needed to generate the create-chimera-app template, to bootstrap a fuzz testing suite very fast.
-
-## Step-by-Step Guide
+# Forked Fuzzing with Echidna and Chimera
 
 ### 1. Create Foundry Project with Chimera Template
 ```bash

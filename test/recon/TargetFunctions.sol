@@ -25,8 +25,14 @@ abstract contract TargetFunctions is
             if (newNumber != 0) {
                 t(counter.number() == newNumber, "number != newNumber");
             }
-        } catch {
-            t(false, "setNumber reverts");
+        } catch (bytes memory err) {
+            bool unexpectedError;
+            // checks for custom errors and panics
+            unexpectedError = 
+                expectedError(err, "abc") || 
+                expectedError(err, "CustomError(uint)") || 
+                expectedError(err, "Panic(17)"); 
+            t(unexpectedError, "unexpected error");
         }
     }
 

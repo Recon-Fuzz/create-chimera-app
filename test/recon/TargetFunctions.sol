@@ -9,6 +9,7 @@ import {vm} from "@chimera/Hevm.sol";
 import {AdminTargets} from "./targets/AdminTargets.sol";
 import {DoomsdayTargets} from "./targets/DoomsdayTargets.sol";
 import {ManagersTargets} from "./targets/ManagersTargets.sol";
+import {Panic} from "./helpers/Panic.sol";
 
 abstract contract TargetFunctions is
     AdminTargets,
@@ -31,7 +32,7 @@ abstract contract TargetFunctions is
             unexpectedError = 
                 expectedError(err, "abc") || 
                 expectedError(err, "CustomError(uint)") || 
-                expectedError(err, "Panic(17)"); 
+                expectedError(err, Panic.arithmeticPanic); 
             t(unexpectedError, "unexpected error");
         }
     }

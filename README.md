@@ -4,8 +4,7 @@
 - [Usage](#usage)
   - [Build](#build)
   - [Foundry Testing](#foundry-testing)
-  - [Echidna Property Testing](#echidna-property-testing)
-  - [Medusa Property Testing](#medusa-property-testing)
+  - [Property Testing](#echidna-property-testing)
 - [Uploading Fuzz Job To Recon](#uploading-fuzz-job-to-recon)
 
 

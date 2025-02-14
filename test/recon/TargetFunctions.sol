@@ -30,9 +30,9 @@ abstract contract TargetFunctions is
             bool expectedError;
             // checks for custom errors and panics
             expectedError = 
-                checkError(err, "abc") ||
-                checkError(err, "CustomError()") ||
-                checkError(err, Panic.arithmeticPanic); 
+                checkError(err, "abc") || // error string from require statement
+                checkError(err, "CustomError()") || // custom error
+                checkError(err, Panic.arithmeticPanic); // compiler panic errors
             t(expectedError, "unexpected error");
         }
     }

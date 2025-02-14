@@ -27,13 +27,13 @@ abstract contract TargetFunctions is
                 t(counter.number() == newNumber, "number != newNumber");
             }
         } catch (bytes memory err) {
-            bool unexpectedError;
+            bool expectedError;
             // checks for custom errors and panics
-            unexpectedError = 
-                expectedError(err, "abc") || 
-                expectedError(err, "CustomError(uint)") || 
-                expectedError(err, Panic.arithmeticPanic); 
-            t(unexpectedError, "unexpected error");
+            expectedError = 
+                checkError(err, "abc") ||
+                checkError(err, "CustomError()") ||
+                checkError(err, Panic.arithmeticPanic); 
+            t(expectedError, "unexpected error");
         }
     }
 

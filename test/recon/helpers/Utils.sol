@@ -2,87 +2,126 @@
 pragma solidity ^0.8.0;
 
 contract Utils {
-    function expectedError(bytes memory err, string memory expected) internal pure returns(bool) {
-        bytes32 errorBytes = keccak256(abi.encodePacked(_getRevertMsg(err)));
-        bytes32 expectedBytes = keccak256(abi.encodePacked(expected));
 
-        // Check if error contains expected string
-        if (errorBytes == expectedBytes) {
-            return true;
+    /// @dev check if the error returned from a call is the same as the expected error
+    /// @param err the error returned from a call
+    /// @param expected the expected error
+    /// @return true if the error is the same as the expected error, false otherwise
+    function checkError(bytes memory err, string memory expected) internal pure returns(bool) {
+        (string memory revertMsg, bool customError) = _getRevertMsg(err);
+        
+        bytes32 errorBytes;
+        bytes32 expectedBytes;
+
+        if(customError) {
+            // Custom error returns the keccak256 hash of the error, so don't need to hash it again
+            errorBytes = bytes32(abi.encodePacked(revertMsg, bytes28(0)));
+            expectedBytes = bytes4(keccak256(abi.encodePacked(expected)));
+        } else {
+            errorBytes = keccak256(abi.encodePacked(revertMsg));
+            expectedBytes = keccak256(abi.encodePacked(expected));
         }
 
-        return false;
+        // Check if error contains expected string
+        return errorBytes == expectedBytes;
     }
 
-    // are custom errors and revert strings handled the same way?
-    // this determines if we need to add extra handling for custom errors
+    /// @dev get the revert message from a call
+    /// @notice based on https://ethereum.stackexchange.com/a/83577
+    /// @param returnData the return data from a call
+    /// @return the revert message and a boolean indicating if it's a custom error
+    function _getRevertMsg(bytes memory returnData) internal pure returns (string memory, bool) {
+        // If the returnData length is 0, then the transaction failed silently (without a revert message)
+        if (returnData.length == 0) return ("", false);
 
-    // https://ethereum.stackexchange.com/a/83577
-    // TODO: add handling for other panic codes
-    function _getRevertMsg(bytes memory returnData) internal pure returns (string memory) {
-
+        // 1. Panic(uint256)
         // Check that the data has the right size: 4 bytes for signature + 32 bytes for panic code
         if (returnData.length == 4 + 32) {
             // Check that the data starts with the Panic signature
-            bytes4 panicSignature = bytes4(keccak256(bytes("Panic(uint256)")));
-            for (uint256 i = 0; i < 4; i++) {
-                if (returnData[i] != panicSignature[i]) return "Undefined signature";
+            bool panic = _checkIfPanic(returnData);
+    
+            if (panic) {
+                return _getPanicCode(returnData);
             }
-
-            uint256 panicCode;
-            for (uint256 i = 4; i < 36; i++) {
-                panicCode = panicCode << 8;
-                panicCode |= uint8(returnData[i]);
-            }
-
-            // Now convert the panic code into its string representation
-            if (panicCode == 0) {
-                // generic compiler inserted panics
-                return "Panic(0)";
-            } else if (panicCode == 1) {
-                // call assert with an argument that evaluates to false
-                return "Panic(1)";
-            } else if (panicCode == 17) {
-                // arithmetic operation results in underflow or overflow
-                return "Panic(17)";
-            } else if (panicCode == 18) {
-                // division or modulo by zero
-                return "Panic(18)";
-            } else if (panicCode == 33) {
-                // converting a value that's too big or negative into an enum type
-                return "Panic(33)";
-            } else if (panicCode == 34) {
-                // access a storage byte array that is incorrectly encoded
-                return "Panic(34)";
-            } else if (panicCode == 49) {
-                // call .pop() on an empty array
-                return "Panic(49)";
-            } else if (panicCode == 50) {
-                // array access out of bounds
-                return "Panic(50)";
-            } else if (panicCode == 65) {
-                // allocate too much memory or create an array that is too large
-                return "Panic(65)";
-            } else if (panicCode == 81) {
-                // call a zero-initialized variable of internal function type
-                return "Panic(81)";
-            }
-
-            return "Undefined panic code";
-        }
-
-        // If the returnData length is less than 68, then the transaction failed silently (without a revert message)
-        if (returnData.length < 68) return "Transaction reverted silently";
-
-        assembly {
-            // Slice the sighash of the error
-            returnData := add(returnData, 0x04)
         }
         
-        // Returns the sighash as a string
-        // Custom errors and are encoded as "keccak256(CustomError(uint))" - CustomError can be anything
-        // Revert strings are encoded as "keccak256(Error(string))" - Error is always the same for a revert string
-        // TODO: for revert strings, we should return the string of the error to be able to check it against the expected string
-        return abi.decode(returnData, (string)); 
+        // Get the error selector from returnData
+        bytes4 errorSelector = _getErrorSelector(returnData);
+
+        // 2. Error(string) - If it's a standard revert string
+        bytes4 errorStringSelector = bytes4(keccak256("Error(string)")); // Get the standard Error(string) selector
+        
+        if (errorSelector == errorStringSelector) {
+            assembly {
+                // slice the sighash of the error so we can decode the string
+                returnData := add(returnData, 0x04)
+            }
+            return (abi.decode(returnData, (string)), false);
+        }
+
+        // 3. Custom error - Return the custom error selector as a string
+        return (string(abi.encodePacked(errorSelector)), true);
+    }
+
+    function _checkIfPanic(bytes memory returnData) internal pure returns (bool) {
+        bytes4 panicSignature = bytes4(keccak256(bytes("Panic(uint256)")));
+        
+        for (uint256 i = 0; i < 4; i++) {
+            if (returnData[i] != panicSignature[i]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    function _getPanicCode(bytes memory returnData) internal pure returns (string memory, bool) {
+        uint256 panicCode;
+        for (uint256 i = 4; i < 36; i++) {
+            panicCode = panicCode << 8;
+            panicCode |= uint8(returnData[i]);
+        }
+
+        // Convert the panic code into its string representation
+        if (panicCode == 0) {
+            // generic compiler inserted panics
+            return ("Panic(0)", false);
+        } else if (panicCode == 1) {
+            // call assert with an argument that evaluates to false
+            return ("Panic(1)", false);
+        } else if (panicCode == 17) {
+            // arithmetic operation results in underflow or overflow
+            return ("Panic(17)", false);
+        } else if (panicCode == 18) {
+            // division or modulo by zero
+            return ("Panic(18)", false);
+        } else if (panicCode == 33) {
+            // converting a value that's too big or negative into an enum type
+            return ("Panic(33)", false);
+        } else if (panicCode == 34) {
+            // access a storage byte array that is incorrectly encoded
+            return ("Panic(34)", false);
+        } else if (panicCode == 49) {
+            // call .pop() on an empty array
+            return ("Panic(49)", false);
+        } else if (panicCode == 50) {
+            // array access out of bounds
+            return ("Panic(50)", false);
+        } else if (panicCode == 65) {
+            // allocate too much memory or create an array that is too large
+            return ("Panic(65)", false);
+        } else if (panicCode == 81) {
+            // call a zero-initialized variable of internal function type
+            return ("Panic(81)", false);
+        }
+
+        return ("Undefined panic code", false);
+    }
+
+    function _getErrorSelector(bytes memory returnData) internal pure returns (bytes4 errorSelector) {
+        assembly {
+            errorSelector := mload(add(returnData, 0x20))
+        }
+        return errorSelector;
     }
 }

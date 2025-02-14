@@ -49,9 +49,6 @@ This template comes with property tests defined on the `Counter` contract in the
 ```shell
 echidna . --contract CryticTester --config echidna.yaml
 ```
-Assertion mode is enabled by default in the echidna.yaml config file.
-
-To test in property mode enable `testMode: "property"` in [echidna.yaml](https://github.com/Recon-Fuzz/create-chimera-app/blob/main/echidna.yaml)).
 
 #### Medusa Property Testing
 

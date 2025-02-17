@@ -85,10 +85,7 @@ contract Utils {
         }
 
         // Convert the panic code into its string representation
-        if (panicCode == 0) {
-            // generic compiler inserted panics
-            return (Panic.compilerPanic, false);
-        } else if (panicCode == 1) {
+        if (panicCode == 1) {
             // call assert with an argument that evaluates to false
             return (Panic.assertionPanic, false);
         } else if (panicCode == 17) {

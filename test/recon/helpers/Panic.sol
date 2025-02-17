@@ -1,7 +1,6 @@
 
 library Panic {
     // compiler panics
-    string constant compilerPanic =  "Panic(0)";
     string constant assertionPanic = "Panic(1)";
     string constant arithmeticPanic = "Panic(17)";
     string constant divisionPanic = "Panic(18)";

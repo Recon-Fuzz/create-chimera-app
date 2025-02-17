@@ -21,10 +21,6 @@ abstract contract ActorManager {
     // Do not allow the default actor
     error DefaultActor();
 
-    // TODO: We have defined the library
-    // But we need to make this more explicit
-    // So it's very clean in the story what's going on
-
     constructor() {
         // address(this) is the default actor
         _actors.add(address(this));
@@ -39,15 +35,6 @@ abstract contract ActorManager {
     // Get regular users
     function _getActors() internal view returns (address[] memory) {
         return _actors.values();
-    }
-
-    function _enableActor(address target) internal {
-        _actor = target;
-    }
-
-    // NOTE: disabling an actor set the default actor (address(this)) as the current actor
-    function _disableActor() internal {
-        _actor = address(this);
     }
 
     function _addActor(address target) internal {
@@ -76,9 +63,7 @@ abstract contract ActorManager {
 
     // Note: expose this function _in `TargetFunctions` for actor switching
     function _switchActor(uint256 entropy) internal {
-        _disableActor();
-
         address target = _actors.at(entropy % _actors.length());
-        _enableActor(target);
+        _actor = target;
     }
 }

@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-2.0
 pragma solidity ^0.8.0;
 
+import {Panic} from "./Panic.sol";
+
 contract Utils {
 
     /// @dev check if the error returned from a call is the same as the expected error
@@ -85,34 +87,34 @@ contract Utils {
         // Convert the panic code into its string representation
         if (panicCode == 0) {
             // generic compiler inserted panics
-            return ("Panic(0)", false);
+            return (Panic.compilerPanic, false);
         } else if (panicCode == 1) {
             // call assert with an argument that evaluates to false
-            return ("Panic(1)", false);
+            return (Panic.assertionPanic, false);
         } else if (panicCode == 17) {
             // arithmetic operation results in underflow or overflow
-            return ("Panic(17)", false);
+            return (Panic.arithmeticPanic, false);
         } else if (panicCode == 18) {
             // division or modulo by zero
-            return ("Panic(18)", false);
+            return (Panic.divisionPanic, false);
         } else if (panicCode == 33) {
             // converting a value that's too big or negative into an enum type
-            return ("Panic(33)", false);
+            return (Panic.enumPanic, false);
         } else if (panicCode == 34) {
             // access a storage byte array that is incorrectly encoded
-            return ("Panic(34)", false);
+            return (Panic.arrayPanic, false);
         } else if (panicCode == 49) {
             // call .pop() on an empty array
-            return ("Panic(49)", false);
+            return (Panic.emptyArrayPanic, false);
         } else if (panicCode == 50) {
             // array access out of bounds
-            return ("Panic(50)", false);
+            return (Panic.outOfBoundsPanic, false);
         } else if (panicCode == 65) {
             // allocate too much memory or create an array that is too large
-            return ("Panic(65)", false);
+            return (Panic.memoryPanic, false);
         } else if (panicCode == 81) {
             // call a zero-initialized variable of internal function type
-            return ("Panic(81)", false);
+            return (Panic.functionPanic, false);
         }
 
         return ("Undefined panic code", false);

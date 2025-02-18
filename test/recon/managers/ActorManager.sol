@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import {BaseSetup} from "@chimera/BaseSetup.sol";
 import {vm} from "@chimera/Hevm.sol";
-import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
+import {EnumerableSet} from "./utils/EnumerableSet.sol";
 
 abstract contract ActorManager {
     using EnumerableSet for EnumerableSet.AddressSet;

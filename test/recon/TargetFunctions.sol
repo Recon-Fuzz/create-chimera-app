@@ -9,6 +9,7 @@ import {vm} from "@chimera/Hevm.sol";
 import {AdminTargets} from "./targets/AdminTargets.sol";
 import {DoomsdayTargets} from "./targets/DoomsdayTargets.sol";
 import {ManagersTargets} from "./targets/ManagersTargets.sol";
+import {Panic} from "./helpers/Panic.sol";
 
 abstract contract TargetFunctions is
     AdminTargets,
@@ -25,8 +26,14 @@ abstract contract TargetFunctions is
             if (newNumber != 0) {
                 t(counter.number() == newNumber, "number != newNumber");
             }
-        } catch {
-            t(false, "setNumber reverts");
+        } catch (bytes memory err) {
+            bool expectedError;
+            // checks for custom errors and panics
+            expectedError = 
+                checkError(err, "abc") || // error string from require statement
+                checkError(err, "CustomError()") || // custom error
+                checkError(err, Panic.arithmeticPanic); // compiler panic errors
+            t(expectedError, "unexpected error");
         }
     }
 

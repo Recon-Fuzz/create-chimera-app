@@ -9,10 +9,13 @@ import {vm} from "@chimera/Hevm.sol";
 import {ActorManager} from "./managers/ActorManager.sol";
 import {AssetManager} from "./managers/AssetManager.sol";
 
+// Helpers
+import {Utils} from "./helpers/Utils.sol";
+
 // Your deps
 import "src/Counter.sol";
 
-abstract contract Setup is BaseSetup, ActorManager, AssetManager {
+abstract contract Setup is BaseSetup, ActorManager, AssetManager, Utils {
     Counter counter;
 
     /// === Setup === ///

@@ -66,44 +66,39 @@ The ABIs of these contracts can be taken from the `out` directory and added to R
 You can offload your fuzzing job to Recon to run long duration jobs and share test results with collaborators using the [jobs page](https://getrecon.xyz/dashboard/jobs):
 
 #### Medusa
-1. Select Medusa as the job type using the radio buttons at the top of the page.
-2. Add the link for this repo in the *Enter GitHub Repo URL* form field (this will prefill the remaining form fields)
-<div align="center">
-    <img src="https://github.com/Recon-Fuzz/create-chimera-app/assets/94120714/9f9038f6-5f9f-4b0a-bdc0-ba6aedaaaded">
-</div>    
+1. Select Medusa as the job type using the radio buttons at the top of the page
 
-2. Specify the `medusa.json` config file in the *Medusa config filename* field.
+2. Add a name for the job (optional)
+   
+3. Add the link for this repo in the *Enter GitHub Repo URL* form field (this will prefill the remaining form fields)
 <div align="center">
-  <img src="https://github.com/Recon-Fuzz/create-chimera-app/assets/94120714/5c2a2763-eff9-4ddf-aa1d-4835f93fc0f4">
+  <img width="418" alt="image" src="https://github.com/user-attachments/assets/636ddacf-e96b-4f71-87dc-1bb657e789fa" />
 </div>
 
-3. Optional: to override the `timeout` value in the Medusa config file for longer duration runs enter a value (in seconds) into the *Test Time Limit* field.
+4. To override the timeout value in the Medusa config file for longer duration runs enter a value (in seconds) into the "Test Time Limit" field (optional)
+<div align="center">
+  <img width="234" alt="image" src="https://github.com/user-attachments/assets/38e75819-e52e-4300-a112-5871de2a4e77" />
+</div>
 
 ### Echidna
-1. Select Echidna as the job type using the radio buttons at the top of the page.
+1. Select Echidna as the job type using the radio buttons at the top of the page
+
+2. Add a name for the job (optional)
    
-2. Add the link for this repo in the *Enter GitHub Repo URL* form field (this will prefill the remaining form fields)
+3. Add the link for this repo in the *Enter GitHub Repo URL* form field (this will prefill the remaining form fields)
 <div align="center">
-    <img src="https://github.com/Recon-Fuzz/create-chimera-app/assets/94120714/3f9a0dec-60e1-4be7-86bf-fa5d1945c228">
+    <img width="419" alt="image" src="https://github.com/user-attachments/assets/d0a33369-acdd-4b1b-9bf2-922538016c67" />
 </div>    
 
-3. Add the following path to the test contract, config filename and test contract name to the corresponding form fields. Optional: to override the `timeout` and `testLimit` from the config file use the corresponding form fields.
+4. To override the `testLimit` from the `echidna.yaml` config file change the value in the corresponding form field (optional)
 <div align="center">
-    <img src="https://github.com/Recon-Fuzz/create-chimera-app/assets/94120714/6f16e1ce-d753-4390-be3f-a60b40796a25">
+    <img width="228" alt="image" src="https://github.com/user-attachments/assets/0580eee0-2bbf-46f4-afbe-b2d8ea398d66" />
 </div> 
 
-***
+### Both 
+5. Clicking _Run Job_ will add your job to the queue and it will show up below the form
 
-4. Clicking the *Run Job* button will upload the job to Recon's cloud fuzz runner service. You'll see info about your job in the *Job Details* section and you'll be able to view your job in the *All Jobs* section.
-<div align="center">
-    <img src="https://github.com/Recon-Fuzz/create-chimera-app/assets/94120714/af3420bb-1dab-4be1-bcec-de429a729afe">
-</div> 
-
-
-5. Clicking *View Details* button for a job lets you see the fuzzer logs and coverage report (only generated after the run is complete). You can share a fuzz run with any collaborators using the *Share Job Results* button.
-<div align="center">
-    <img src="https://github.com/Recon-Fuzz/create-chimera-app/assets/94120714/dd49627a-5875-4ed2-a59c-c02976a4562a">
-</div>
+6. Clicking *View Details* button for a job lets you see the fuzzer logs and coverage report (only generated after the run is complete). You can share a fuzz run with any collaborators using the *Share Job Results* button.
 
 ## Credits
 This template implements the [`EnumerableSet`](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/structs/EnumerableSet.sol) contract from OpenZeppelin and the [`ERC20`](https://github.com/transmissions11/solmate/blob/main/src/tokens/ERC20.sol) contract from Solmate to reduce the number of dependencies and make it simpler to get started.

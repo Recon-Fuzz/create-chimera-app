@@ -6,15 +6,13 @@
   - [Foundry Testing](#foundry-testing)
   - [Property Testing](#echidna-property-testing)
 - [Uploading Fuzz Job To Recon](#uploading-fuzz-job-to-recon)
-
+- [Credits](#credits)
 
 This Foundry template allows you to bootstrap a fuzz testing suite using a scaffolding provided by the [Recon](https://getrecon.xyz/tools/sandbox) tool.
 
 It extends the default Foundry template used when running `forge init` to include example property tests using assertion tests and boolean property tests supported by [Echidna](https://github.com/crytic/echidna) and [Medusa](https://github.com/crytic/medusa).
 
 Broken properties can be turned into unit tests for easier debugging with Recon ([for Echidna](https://getrecon.xyz/tools/echidna)/[for Medusa](https://getrecon.xyz/tools/medusa)) and added to the `CryticToFoundry` contract.
-
-Credits: This template implements the [`EnumerableSet`](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/structs/EnumerableSet.sol) contract from OpenZeppelin and the [`ERC20`](https://github.com/transmissions11/solmate/blob/main/src/tokens/ERC20.sol) contract from Solmate to reduce the number of dependencies and make it simpler to get started.
 
 ## Prerequisites
 To use this template you'll need to have Foundry installed and at least one of the fuzzers (Echidna or Medusa):
@@ -106,4 +104,7 @@ You can offload your fuzzing job to Recon to run long duration jobs and share te
 <div align="center">
     <img src="https://github.com/Recon-Fuzz/create-chimera-app/assets/94120714/dd49627a-5875-4ed2-a59c-c02976a4562a">
 </div>
+
+## Credits
+This template implements the [`EnumerableSet`](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/structs/EnumerableSet.sol) contract from OpenZeppelin and the [`ERC20`](https://github.com/transmissions11/solmate/blob/main/src/tokens/ERC20.sol) contract from Solmate to reduce the number of dependencies and make it simpler to get started.
 

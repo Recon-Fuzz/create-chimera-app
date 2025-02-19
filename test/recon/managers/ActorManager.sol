@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import {BaseSetup} from "@chimera/BaseSetup.sol";
 import {vm} from "@chimera/Hevm.sol";
-import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
+import {EnumerableSet} from "./utils/EnumerableSet.sol";
 
 /// @dev This is the source of truth for the actors being used in the test
 /// @notice No actors should be used in the suite without being added here first

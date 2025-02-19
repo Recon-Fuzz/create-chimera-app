@@ -14,6 +14,8 @@ It extends the default Foundry template used when running `forge init` to includ
 
 Broken properties can be turned into unit tests for easier debugging with Recon ([for Echidna](https://getrecon.xyz/tools/echidna)/[for Medusa](https://getrecon.xyz/tools/medusa)) and added to the `CryticToFoundry` contract.
 
+Credits: This template implements the [`EnumerableSet`](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/structs/EnumerableSet.sol) contract from OpenZeppelin and the [`ERC20`](https://github.com/transmissions11/solmate/blob/main/src/tokens/ERC20.sol) contract from Solmate to reduce the number of dependencies and make it simpler to get started.
+
 ## Prerequisites
 To use this template you'll need to have Foundry installed and at least one of the fuzzers (Echidna or Medusa):
 - [Foundry](https://book.getfoundry.sh/getting-started/installation)

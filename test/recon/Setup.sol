@@ -29,18 +29,4 @@ abstract contract Setup is BaseSetup, ActorManager, AssetManager, Utils {
 
         // TODO: Standardize Mint and allowances to all actors
     }
-
-
-    /// === Actor Modifiers === ///
-
-    // NOTE: LIMITATION You can use these modifier only for one call, so use them for BASIC TARGETS
-    modifier asAdmin {
-        vm.prank(address(this));
-        _;
-    }
-
-    modifier asActor {
-        vm.prank(_getActor());
-        _;
-    }
 }

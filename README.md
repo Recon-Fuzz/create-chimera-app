@@ -1,20 +1,20 @@
+## Create Chimera App
 - [Prerequisites](#prerequisites)
 - [Usage](#usage)
   - [Build](#build)
-  - [Foundry Testing](#foundry-testing)
   - [Property Testing](#echidna-property-testing)
+  - [Foundry Testing](#foundry-testing)
+- [Expanding Target Functions](expanding-target-functions)
 - [Uploading Fuzz Job To Recon](#uploading-fuzz-job-to-recon)
 - [Credits](#credits)
+
   
-## Create Chimera App
 This Foundry template allows you to bootstrap an invariant fuzz testing suite using a scaffolding provided by the [Recon](https://getrecon.xyz/tools/sandbox) tool.
 
 It extends the default Foundry template used when running `forge init` to include example property tests supported by [Echidna](https://github.com/crytic/echidna) and [Medusa](https://github.com/crytic/medusa).
 
-Broken properties can be turned into unit tests for easier debugging with Recon ([for Echidna](https://getrecon.xyz/tools/echidna)/[for Medusa](https://getrecon.xyz/tools/medusa)) and added to the `CryticToFoundry` contract.
-
 ## Prerequisites
-To use this template you'll need to have Foundry installed and at least one of the fuzzers (Echidna or Medusa):
+To use this template you'll need to have Foundry installed and at least one fuzzer (Echidna or Medusa):
 - [Foundry](https://book.getfoundry.sh/getting-started/installation)
 - [Echidna](https://github.com/crytic/echidna?tab=readme-ov-file#installation)
 - [Medusa](https://github.com/crytic/medusa?tab=readme-ov-file#install)
@@ -27,42 +27,43 @@ forge init --template https://github.com/Recon-Fuzz/create-chimera-app
 ```
 
 ### Build
+This template is configured to use Foundry as it's build system for [Echidna](https://github.com/Recon-Fuzz/create-chimera-app-2/blob/271c3506a040b30011accfc15ba253cf99a4e6f1/echidna.yaml#L9) and [Medusa](https://github.com/Recon-Fuzz/create-chimera-app-2/blob/271c3506a040b30011accfc15ba253cf99a4e6f1/medusa.json#L73-L83) so after making any changes the project must successfully compile using the following command before running either fuzzer:
 
 ```shell
 forge build
 ```
 
-### Foundry Testing
-
-```shell
-forge test
-```
-
-This will run all unit, fuzz and invariant tests in the `CounterTest` and `CryticToFoundry` contracts.
-
 ### Property Testing
 This template comes with property tests defined for the `Counter` contract in the [`Properties`](https://github.com/Recon-Fuzz/create-chimera-app-2/blob/main/test/recon/Properties.sol) contract and in the function handlers in the [`TargetFunctions`](https://github.com/Recon-Fuzz/create-chimera-app-2/blob/14f651389623f23880723f01936c546b6d0234a1/test/recon/TargetFunctions.sol#L23-L51) contract.
 
 #### Echidna Property Testing
-
+To locally test properties using Echidna, run the following command in your terminal:
 ```shell
 echidna . --contract CryticTester --config echidna.yaml
 ```
 
 #### Medusa Property Testing
+To locally test properties using Medusa, run the following command in your terminal:
 
 ```shell
 medusa fuzz
 ```
 
-## Expanding Target Functions
-After you've added new contracts in the `src` directory, you can get their ABIs from the `out` directory and paste them in Recon's [Sandbox](https://getrecon.xyz/tools/sandbox).
+### Foundry Testing
+Broken properties found when running Echidna and/or Medusa can be turned into unit tests for easier debugging with Recon ([for Echidna](https://getrecon.xyz/tools/echidna)/[for Medusa](https://getrecon.xyz/tools/medusa)) and added to the `CryticToFoundry` contract.
 
-These additional contracts can then be deployed in the `Setup` contract and you can add the target functions that the sandbox generated to the existing `TargetFunctions` contract. 
+```shell
+forge test --match-contract CryticToFoundry -vv
+```
+
+## Expanding Target Functions
+After you've added new contracts in the `src` directory, they can then be deployed in the `Setup` contract.
+
+The ABIs of these contracts can be taken from the `out` directory and added to Recon's [Sandbox](https://getrecon.xyz/tools/sandbox). The target functions that the sandbox generates can then be added to the existing `TargetFunctions` contract. 
 
 ## Uploading Fuzz Job To Recon
 
-You can offload your fuzzing job to Recon to run long duration jobs and share test results with collaborators using the [jobs page](https://getrecon.xyz/dashboard/jobs) on Recon:
+You can offload your fuzzing job to Recon to run long duration jobs and share test results with collaborators using the [jobs page](https://getrecon.xyz/dashboard/jobs):
 
 #### Medusa
 1. Select Medusa as the job type using the radio buttons at the top of the page.

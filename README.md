@@ -1,5 +1,3 @@
-## Create Chimera App
-
 - [Prerequisites](#prerequisites)
 - [Usage](#usage)
   - [Build](#build)
@@ -7,7 +5,8 @@
   - [Property Testing](#echidna-property-testing)
 - [Uploading Fuzz Job To Recon](#uploading-fuzz-job-to-recon)
 - [Credits](#credits)
-
+  
+## Create Chimera App
 This Foundry template allows you to bootstrap a fuzz testing suite using a scaffolding provided by the [Recon](https://getrecon.xyz/tools/sandbox) tool.
 
 It extends the default Foundry template used when running `forge init` to include example property tests using assertion tests and boolean property tests supported by [Echidna](https://github.com/crytic/echidna) and [Medusa](https://github.com/crytic/medusa).

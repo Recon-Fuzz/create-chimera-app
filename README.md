@@ -7,9 +7,9 @@
 - [Credits](#credits)
   
 ## Create Chimera App
-This Foundry template allows you to bootstrap a fuzz testing suite using a scaffolding provided by the [Recon](https://getrecon.xyz/tools/sandbox) tool.
+This Foundry template allows you to bootstrap an invariant fuzz testing suite using a scaffolding provided by the [Recon](https://getrecon.xyz/tools/sandbox) tool.
 
-It extends the default Foundry template used when running `forge init` to include example property tests using assertion tests and boolean property tests supported by [Echidna](https://github.com/crytic/echidna) and [Medusa](https://github.com/crytic/medusa).
+It extends the default Foundry template used when running `forge init` to include example property tests supported by [Echidna](https://github.com/crytic/echidna) and [Medusa](https://github.com/crytic/medusa).
 
 Broken properties can be turned into unit tests for easier debugging with Recon ([for Echidna](https://getrecon.xyz/tools/echidna)/[for Medusa](https://getrecon.xyz/tools/medusa)) and added to the `CryticToFoundry` contract.
 
@@ -41,7 +41,7 @@ forge test
 This will run all unit, fuzz and invariant tests in the `CounterTest` and `CryticToFoundry` contracts.
 
 ### Property Testing
-This template comes with property tests defined on the `Counter` contract in the `Properties` contract and in the function handlers in the `TargetFunctions` contract.
+This template comes with property tests defined for the `Counter` contract in the [`Properties`](https://github.com/Recon-Fuzz/create-chimera-app-2/blob/main/test/recon/Properties.sol) contract and in the function handlers in the [`TargetFunctions`](https://github.com/Recon-Fuzz/create-chimera-app-2/blob/14f651389623f23880723f01936c546b6d0234a1/test/recon/TargetFunctions.sol#L23-L51) contract.
 
 #### Echidna Property Testing
 
@@ -58,7 +58,7 @@ medusa fuzz
 ## Expanding Target Functions
 After you've added new contracts in the `src` directory, you can get their ABIs from the `out` directory and paste them in Recon's [Sandbox](https://getrecon.xyz/tools/sandbox).
 
-After deploying these additional contracts in the `Setup` contract you can add the target functions that the sanbox generated to the existing `TargetFunctions` contract. 
+These additional contracts can then be deployed in the `Setup` contract and you can add the target functions that the sandbox generated to the existing `TargetFunctions` contract. 
 
 ## Uploading Fuzz Job To Recon
 

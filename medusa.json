@@ -67,6 +67,12 @@
       "cheatCodes": {
         "cheatCodesEnabled": true,
         "enableFFI": false
+      },
+      "forkConfig": {
+        "forkModeEnabled": false,
+        "rpcUrl": "",
+        "rpcBlock": 1,
+        "poolSize": 20
       }
     }
   },

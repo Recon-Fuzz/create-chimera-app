@@ -31,6 +31,18 @@ abstract contract ActorManager {
         _actor = address(this);
     }
 
+
+    // NOTE: LIMITATION You can use these modifier only for one call, so use them for BASIC TARGETS
+    modifier asAdmin {
+        vm.prank(address(this));
+        _;
+    }
+
+    modifier asActor {
+        vm.prank(_getActor());
+        _;
+    }
+
     /// @notice Returns the current active actor
     function _getActor() internal view returns (address) {
        return _actor;

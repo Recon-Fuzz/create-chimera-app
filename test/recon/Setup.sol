@@ -27,6 +27,9 @@ abstract contract Setup is BaseSetup, ActorManager, AssetManager, Utils {
 
         counter = new Counter();
 
-        // TODO: Standardize Mint and allowances to all actors
+        // Mints to all actors and approves allowances to the counter
+        address[] memory approvalArray = new address[](1);
+        approvalArray[0] = address(counter);
+        _finalizeAssetDeployment(_getActors(), approvalArray, type(uint88).max);
     }
 }

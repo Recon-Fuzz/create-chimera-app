@@ -6,11 +6,11 @@ import {BaseSetup} from "@chimera/BaseSetup.sol";
 import {vm} from "@chimera/Hevm.sol";
 
 // Managers
-import {ActorManager} from "./managers/ActorManager.sol";
-import {AssetManager} from "./managers/AssetManager.sol";
+import {ActorManager} from "@recon/ActorManager.sol";
+import {AssetManager} from "@recon/AssetManager.sol";
 
 // Helpers
-import {Utils} from "./helpers/Utils.sol";
+import {Utils} from "@recon/Utils.sol";
 
 // Your deps
 import "src/Counter.sol";

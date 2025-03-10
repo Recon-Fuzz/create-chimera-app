@@ -32,4 +32,17 @@ abstract contract Setup is BaseSetup, ActorManager, AssetManager, Utils {
         approvalArray[0] = address(counter);
         _finalizeAssetDeployment(_getActors(), approvalArray, type(uint88).max);
     }
+
+    /// === MODIFIERS === ///
+    /// Prank admin and actor
+    
+    modifier asAdmin {
+        vm.prank(address(this));
+        _;
+    }
+
+    modifier asActor {
+        vm.prank(address(_getActor()));
+        _;
+    }
 }

@@ -1,18 +1,23 @@
 ## Create Chimera App
-
-
+- [Prerequisites](#prerequisites)
 - [Usage](#usage)
-- [Build](#build)
-- [Foundry Testing](#foundry-testing)
-- [Echidna Property Testing](#echidna-property-testing)
-- [Medusa Property Testing](#medusa-property-testing)
+  - [Build](#build)
+  - [Property Testing](#echidna-property-testing)
+  - [Foundry Testing](#foundry-testing)
+- [Expanding Target Functions](expanding-target-functions)
 - [Uploading Fuzz Job To Recon](#uploading-fuzz-job-to-recon)
+- [Credits](#credits)
 
-This Foundry template allows you to bootstrap a fuzz testing suite using a scaffolding provided by the [Recon](https://getrecon.xyz/tools/sandbox) tool.
+  
+This Foundry template allows you to bootstrap an invariant fuzz testing suite using a scaffolding provided by the [Recon](https://getrecon.xyz/tools/sandbox) tool.
 
-It extends the default Foundry template used when running `forge init` to include example property tests using assertion tests and boolean property tests supported by [Echidna](https://github.com/crytic/echidna) and [Medusa](https://github.com/crytic/medusa).
+It extends the default Foundry template used when running `forge init` to include example property tests supported by [Echidna](https://github.com/crytic/echidna) and [Medusa](https://github.com/crytic/medusa).
 
-Broken properties can be turned into unit tests for easier debugging with Recon ([for Echidna](https://getrecon.xyz/tools/echidna)/[for Medusa](https://getrecon.xyz/tools/medusa)) and added to the `CryticToFoundry` contract.
+## Prerequisites
+To use this template you'll need to have Foundry installed and at least one fuzzer (Echidna or Medusa):
+- [Foundry](https://book.getfoundry.sh/getting-started/installation)
+- [Echidna](https://github.com/crytic/echidna?tab=readme-ov-file#installation)
+- [Medusa](https://github.com/crytic/medusa?tab=readme-ov-file#install)
 
 ## Usage
 To initialize a new Foundry repo using this template run the following command in the terminal.
@@ -22,94 +27,79 @@ forge init --template https://github.com/Recon-Fuzz/create-chimera-app
 ```
 
 ### Build
+This template is configured to use Foundry as it's build system for [Echidna](https://github.com/Recon-Fuzz/create-chimera-app-2/blob/271c3506a040b30011accfc15ba253cf99a4e6f1/echidna.yaml#L9) and [Medusa](https://github.com/Recon-Fuzz/create-chimera-app-2/blob/271c3506a040b30011accfc15ba253cf99a4e6f1/medusa.json#L73-L83) so after making any changes the project must successfully compile using the following command before running either fuzzer:
 
 ```shell
 forge build
 ```
 
-### Foundry Testing
+### Property Testing
+This template comes with property tests defined for the `Counter` contract in the [`Properties`](https://github.com/Recon-Fuzz/create-chimera-app-2/blob/main/test/recon/Properties.sol) contract and in the function handlers in the [`TargetFunctions`](https://github.com/Recon-Fuzz/create-chimera-app-2/blob/14f651389623f23880723f01936c546b6d0234a1/test/recon/TargetFunctions.sol#L23-L51) contract.
 
-```shell
-forge test
-```
-
-This will run all unit, fuzz and invariant tests in the `CounterTest` and `CryticToFoundry` contracts.
-
-### Echidna Property Testing
-
+#### Echidna Property Testing
+To locally test properties using Echidna, run the following command in your terminal:
 ```shell
 echidna . --contract CryticTester --config echidna.yaml
 ```
-Assertion mode is enabled by default in the echidna.yaml config file.
 
-To test in property mode enable `testMode: "property"` in [echidna.yaml](https://github.com/Recon-Fuzz/create-chimera-app/blob/main/echidna.yaml)).
-
-### Medusa Property Testing
+#### Medusa Property Testing
+To locally test properties using Medusa, run the following command in your terminal:
 
 ```shell
 medusa fuzz
 ```
-Assertion and property mode are enabled by default in the medusa.json config file meaning the fuzzer will check assertion and property tests. 
 
-To test only in property mode disable assertion mode using:
+### Foundry Testing
+Broken properties found when running Echidna and/or Medusa can be turned into unit tests for easier debugging with Recon ([for Echidna](https://getrecon.xyz/tools/echidna)/[for Medusa](https://getrecon.xyz/tools/medusa)) and added to the `CryticToFoundry` contract.
 
-```json
-"assertionTesting": {
-    "enabled": false
-}  
+```shell
+forge test --match-contract CryticToFoundry -vv
 ```
 
-in [medusa.json](https://github.com/Recon-Fuzz/create-chimera-app/blob/main/medusa.json).
-
 ## Expanding Target Functions
+After you've added new contracts in the `src` directory, they can then be deployed in the `Setup` contract.
 
-Once you wrote your Smart Contract, you can grab it's ABI and paste it here in Recon's Sandbox: https://getrecon.xyz/tools/sandbox
-
-This will generate a new `TargetFunctions` file with all the updated handlers
-
-You can combine multiple Target Function files to target different contracts and quickly reach coverage
+The ABIs of these contracts can be taken from the `out` directory and added to Recon's [Sandbox](https://getrecon.xyz/tools/sandbox). The target functions that the sandbox generates can then be added to the existing `TargetFunctions` contract. 
 
 ## Uploading Fuzz Job To Recon
 
-You can offload your fuzzing job to Recon to run long duration jobs and share test results with collaborators using the [jobs page](https://getrecon.xyz/dashboard/jobs) on Recon:
+You can offload your fuzzing job to Recon to run long duration jobs and share test results with collaborators using the [jobs page](https://getrecon.xyz/dashboard/jobs):
 
 #### Medusa
-1. Select Medusa as the job type using the radio buttons at the top of the page.
-2. Add the link for this repo in the *Enter GitHub Repo URL* form field (this will prefill the remaining form fields)
-<div align="center">
-    <img src="https://github.com/Recon-Fuzz/create-chimera-app/assets/94120714/9f9038f6-5f9f-4b0a-bdc0-ba6aedaaaded">
-</div>    
+1. Select Medusa as the job type using the radio buttons at the top of the page
 
-2. Specify the `medusa.json` config file in the *Medusa config filename* field.
+2. Add a name for the job (optional)
+   
+3. Add the link for this repo in the *Enter GitHub Repo URL* form field (this will prefill the remaining form fields)
 <div align="center">
-  <img src="https://github.com/Recon-Fuzz/create-chimera-app/assets/94120714/5c2a2763-eff9-4ddf-aa1d-4835f93fc0f4">
+  <img width="418" alt="image" src="https://github.com/user-attachments/assets/636ddacf-e96b-4f71-87dc-1bb657e789fa" />
 </div>
 
-3. Optional: to override the `timeout` value in the Medusa config file for longer duration runs enter a value (in seconds) into the *Test Time Limit* field.
+4. To override the timeout value in the Medusa config file for longer duration runs enter a value (in seconds) into the "Test Time Limit" field (optional)
+<div align="center">
+  <img width="234" alt="image" src="https://github.com/user-attachments/assets/38e75819-e52e-4300-a112-5871de2a4e77" />
+</div>
 
 ### Echidna
-1. Select Echidna as the job type using the radio buttons at the top of the page.
+1. Select Echidna as the job type using the radio buttons at the top of the page
+
+2. Add a name for the job (optional)
    
-2. Add the link for this repo in the *Enter GitHub Repo URL* form field (this will prefill the remaining form fields)
+3. Add the link for this repo in the *Enter GitHub Repo URL* form field (this will prefill the remaining form fields)
 <div align="center">
-    <img src="https://github.com/Recon-Fuzz/create-chimera-app/assets/94120714/3f9a0dec-60e1-4be7-86bf-fa5d1945c228">
+    <img width="419" alt="image" src="https://github.com/user-attachments/assets/d0a33369-acdd-4b1b-9bf2-922538016c67" />
 </div>    
 
-3. Add the following path to the test contract, config filename and test contract name to the corresponding form fields. Optional: to override the `timeout` and `testLimit` from the config file use the corresponding form fields.
+4. To override the `testLimit` from the `echidna.yaml` config file change the value in the corresponding form field (optional)
 <div align="center">
-    <img src="https://github.com/Recon-Fuzz/create-chimera-app/assets/94120714/6f16e1ce-d753-4390-be3f-a60b40796a25">
+    <img width="228" alt="image" src="https://github.com/user-attachments/assets/0580eee0-2bbf-46f4-afbe-b2d8ea398d66" />
 </div> 
 
-***
+### Both 
+5. Clicking _Run Job_ will add your job to the queue and it will show up below the form
 
-4. Clicking the *Run Job* button will upload the job to Recon's cloud fuzz runner service. You'll see info about your job in the *Job Details* section and you'll be able to view your job in the *All Jobs* section.
-<div align="center">
-    <img src="https://github.com/Recon-Fuzz/create-chimera-app/assets/94120714/af3420bb-1dab-4be1-bcec-de429a729afe">
-</div> 
+6. Clicking *View Details* button for a job lets you see the fuzzer logs and coverage report (only generated after the run is complete). You can share a fuzz run with any collaborators using the *Share Job Results* button.
 
+## Credits
+This template implements the [`EnumerableSet`](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/structs/EnumerableSet.sol) contract from OpenZeppelin and the [`ERC20`](https://github.com/transmissions11/solmate/blob/main/src/tokens/ERC20.sol) contract from Solmate to reduce the number of dependencies and make it simpler to get started.
 
-5. Clicking *View Details* button for a job lets you see the fuzzer logs and coverage report (only generated after the run is complete). You can share a fuzz run with any collaborators using the *Share Job Results* button.
-<div align="center">
-    <img src="https://github.com/Recon-Fuzz/create-chimera-app/assets/94120714/dd49627a-5875-4ed2-a59c-c02976a4562a">
-</div>
-  

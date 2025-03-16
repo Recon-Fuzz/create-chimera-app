@@ -18,6 +18,7 @@ To use this template you'll need to have Foundry installed and at least one fuzz
 - [Foundry](https://book.getfoundry.sh/getting-started/installation)
 - [Echidna](https://github.com/crytic/echidna?tab=readme-ov-file#installation)
 - [Medusa](https://github.com/crytic/medusa?tab=readme-ov-file#install)
+- [Halmos](https://github.com/a16z/halmos?tab=readme-ov-file#installation)
 
 ## Usage
 To initialize a new Foundry repo using this template run the following command in the terminal.
@@ -55,6 +56,11 @@ Broken properties found when running Echidna and/or Medusa can be turned into un
 ```shell
 forge test --match-contract CryticToFoundry -vv
 ```
+
+### Halmos Invariant Testing
+The template works out of the box with Halmos, however Halmos Invariant Testing is currently in preview
+
+Simply run `halmos` on the root of this repository to run Halmos for Invariant Testing
 
 ## Expanding Target Functions
 After you've added new contracts in the `src` directory, they can then be deployed in the `Setup` contract.

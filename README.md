@@ -7,6 +7,7 @@
 - [Expanding Target Functions](expanding-target-functions)
 - [Uploading Fuzz Job To Recon](#uploading-fuzz-job-to-recon)
 - [Credits](#credits)
+- [Help](#help)
 
   
 This Foundry template allows you to bootstrap an invariant fuzz testing suite using a scaffolding provided by the [Recon](https://getrecon.xyz/tools/sandbox) tool.
@@ -109,3 +110,6 @@ You can offload your fuzzing job to Recon to run long duration jobs and share te
 ## Credits
 This template implements the [`EnumerableSet`](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/structs/EnumerableSet.sol) contract from OpenZeppelin and the [`ERC20`](https://github.com/transmissions11/solmate/blob/main/src/tokens/ERC20.sol) contract from Solmate to reduce the number of dependencies and make it simpler to get started.
 
+## Help
+
+Join the Recon Discord: https://getrecon.xyz/discord

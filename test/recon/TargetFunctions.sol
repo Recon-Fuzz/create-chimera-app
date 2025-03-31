@@ -39,7 +39,7 @@ abstract contract TargetFunctions is
         }
     }
 
-    function counter_setNumber2(uint256 newNumber) public updateGhosts asActor {
+    function counter_setNumber2(uint256 newNumber) public asActor {
         // same example assertion test as counter_setNumber1 using ghost variables
         __before();
 

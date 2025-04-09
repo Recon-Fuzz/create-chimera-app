@@ -1,6 +1,6 @@
 {
   "fuzzing": {
-    "workers": 10,
+    "workers": 16,
     "workerResetLimit": 50,
     "timeout": 0,
     "testLimit": 0,
@@ -68,12 +68,13 @@
         "cheatCodesEnabled": true,
         "enableFFI": false
       },
-      "forkConfig": {
-        "forkModeEnabled": false,
-        "rpcUrl": "",
-        "rpcBlock": 1,
-        "poolSize": 20
-      }
+      "skipAccountChecks": true,
+			"forkConfig": {
+				"forkModeEnabled": false,
+				"rpcUrl": "",
+				"rpcBlock": 1,
+				"poolSize": 20
+			}
     }
   },
   "compilation": {
@@ -87,6 +88,11 @@
       ]
     }
   },
+  "slither": {
+		"useSlither": true,
+		"cachePath": "slither_results.json",
+		"args": []
+	},
   "logging": {
     "level": "info",
     "logDirectory": ""

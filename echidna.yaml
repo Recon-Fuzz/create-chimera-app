@@ -1,6 +1,6 @@
 
 testMode: "assertion"
-prefix: "invariant_"
+prefix: "optimize_"
 coverage: true
 corpusDir: "echidna"
 balanceAddr: 0x1043561a8829300000

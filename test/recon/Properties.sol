@@ -6,7 +6,7 @@ import {BeforeAfter} from "./BeforeAfter.sol";
 
 abstract contract Properties is BeforeAfter, Asserts {
     // example property test that gets called randomly by the fuzzer
-    function property_number_never_zero() public {
+    function invariant_number_never_zero() public {
         gt(counter.number(), 0, "number is zero");
     }
 }

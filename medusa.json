@@ -52,7 +52,7 @@
       "propertyTesting": {
         "enabled": true,
         "testPrefixes": [
-          "invariant_"
+          "echidna_"
         ]
       },
       "optimizationTesting": {

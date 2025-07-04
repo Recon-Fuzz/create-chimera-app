@@ -1,0 +1,210 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Implementing Properties
+
+## Quick Decision Tree
+
+**When implementing a property, ask:**
+1. **What type?** → [Property Types](mdc:#property-types)
+2. **Where to implement?** → [Implementation Location](mdc:#implementation-location) 
+3. **How to write?** → [Implementation Patterns](mdc:#implementation-patterns)
+
+## Property Types
+
+Choose the appropriate type based on what you're testing:
+
+| Type | Purpose | Example |
+|------|---------|---------|
+| **Valid States** | System stays in expected states | `totalSupply >= sumOfBalances` |
+| **State Transitions** | Valid state changes only | `balance only increases after mint/transfer` |
+| **Variable Transitions** | Variables change as expected | `price per share doesn't increase on withdrawals` |
+| **High-Level Properties** | Broad system behavior | `system remains solvent` |
+| **Unit Tests** | Specific function behavior | `deposit never reverts with sufficient funds` |
+
+## Implementation Location
+
+### Use GLOBAL properties (in `Properties.sol`) when:
+- ✅ Property should hold after **ANY** function call (true invariants)
+- ✅ Checking system-wide state
+- ✅ Property doesn't specify a particular operation
+
+**Pattern:**
+```solidity
+/// @dev Property: [Clear description of what this checks]
+function property_descriptive_name() public {
+    // Read contract state
+    // Make assertion using t(), eq(), lte(), etc.
+}
+```
+
+### Use INLINED properties (in `TargetFunctions.sol`) when:
+- ✅ Property only applies to **specific** function calls
+- ✅ Need to check pre/post conditions of particular operations
+- ✅ Property is operation-specific
+
+**Pattern:**
+```solidity
+function targetContract_functionName(uint256 param) public {
+    // Optional: Add preconditions/clamping
+    
+    // Call target function (with try/catch if needed)
+    
+    // Add property assertions specific to this function
+}
+```
+
+## Implementation Patterns
+
+### Pattern 1: Simple State Check (Global)
+```solidity
+/// @dev Property: Total supply must equal sum of all balances
+function property_total_supply_conservation() public {
+    uint256 totalSupply = token.totalSupply();
+    uint256 sumBalances = _calculateSumOfBalances();
+    eq(totalSupply, sumBalances, "totalSupply != sum of balances");
+}
+```
+
+### Pattern 2: Before/After Comparison (Inlined)
+```solidity
+function vault_withdraw(uint256 assets) public {
+    __before();
+    vault.withdraw(assets, _getActor(), _getActor());
+    __after();
+    
+    // Property: Price per share shouldn't increase
+    lte(_after.pricePerShare, _before.pricePerShare, "price per share increased");
+}
+```
+
+### Pattern 3: Try/Catch with Expected Errors (Inlined)
+```solidity
+function vault_deposit(uint256 assets) public {
+    try vault.deposit(assets, _getActor()) {
+        // Success - add any success-specific properties
+    } catch (bytes memory reason) {
+        bool expectedError = 
+            checkError(reason, "InsufficientBalance") || 
+            checkError(reason, "InsufficientAllowance");
+        
+        if (!expectedError) {
+            t(false, "deposit should not revert for unexpected reason");
+        }
+    }
+}
+```
+
+### Pattern 4: Conditional Properties (Global)
+```solidity
+function property_conditional_check() public {
+    // Only check this property under certain conditions
+    if (someCondition) {
+        t(someAssertion, "condition-specific property failed");
+    }
+}
+```
+
+## Ghost Variables (BeforeAfter.sol)
+
+**When to use:** Properties need to compare state before/after operations
+
+**Setup:**
+1. Add variables to `Vars` struct in `BeforeAfter.sol`
+2. Update `__before()` and `__after()` functions
+3. Use `_before.variableName` and `_after.variableName` in properties
+
+```solidity
+// In BeforeAfter.sol
+struct Vars {
+    uint256 totalSupply;
+    uint256 userBalance;
+    uint256 pricePerShare;
+}
+
+function __before() internal {
+    _before.totalSupply = token.totalSupply();
+    _before.userBalance = token.balanceOf(_getActor());
+}
+
+function __after() internal {
+    _after.totalSupply = token.totalSupply();
+    _after.userBalance = token.balanceOf(_getActor());
+}
+```
+
+## Assertion Functions Reference
+
+Use these instead of Foundry's assertions:
+
+| Function | Use Case | Example |
+|----------|----------|---------|
+| `t(bool, string)` | General true assertion | `t(value > 0, "value must be positive")` |
+| `eq(a, b, string)` | Equality | `eq(actual, expected, "values don't match")` |
+| `gt(a, b, string)` | Greater than | `gt(balance, 0, "balance must be positive")` |
+| `gte(a, b, string)` | Greater than or equal | `gte(totalSupply, sumBalances, "supply >= balances")` |
+| `lt(a, b, string)` | Less than | `lt(fee, maxFee, "fee too high")` |
+| `lte(a, b, string)` | Less than or equal | `lte(used, capacity, "over capacity")` |
+| `precondition(bool)` | Skip test if false | `precondition(balance > amount)` |
+
+## Common Mistakes to Avoid
+
+❌ **Don't:** Put state-changing operations in `Properties.sol` functions  
+✅ **Do:** Only read state and make assertions in `Properties.sol`
+
+❌ **Don't:** Use Foundry assertions (`assertEq`, `assertTrue`)  
+✅ **Do:** Use Chimera assertions (`eq`, `t`)
+
+❌ **Don't:** Implement same property in multiple handlers  
+✅ **Do:** Use global properties for system-wide invariants
+
+❌ **Don't:** Forget to handle expected reverts  
+✅ **Do:** Use try/catch with proper error checking
+
+## Step-by-Step Implementation
+
+1. **Identify the property type** from the table above
+2. **Choose implementation location** (global vs inlined)
+3. **Add ghost variables** if needed for before/after comparison
+4. **Write the property** using appropriate assertion pattern
+5. **Add clear documentation** with `/// @dev Property:` comment
+6. **Test locally** with small inputs first
+
+## Example: Complete ERC20 Property
+
+```solidity
+// In Properties.sol (Global - applies after any operation)
+/// @dev Property: Total supply must always equal sum of all user balances
+function property_total_supply_conservation() public {
+    uint256 totalSupply = token.totalSupply();
+    address[] memory users = _getActors();
+    
+    uint256 sumBalances;
+    for (uint256 i = 0; i < users.length; i++) {
+        sumBalances += token.balanceOf(users[i]);
+    }
+    
+    eq(totalSupply, sumBalances, "totalSupply != sum of balances");
+}
+
+// In TargetFunctions.sol (Inlined - specific to transfer)
+/// @dev Property: Transfer should only succeed with sufficient balance
+function token_transfer(address to, uint256 amount) public {
+    address from = _getActor();
+    uint256 balanceBefore = token.balanceOf(from);
+    
+    try token.transfer(to, amount) {
+        // Success case - verify balance decreased
+        t(token.balanceOf(from) == balanceBefore - amount, "balance not decreased correctly");
+    } catch {
+        // Revert case - should only happen with insufficient balance
+        t(balanceBefore < amount, "transfer reverted with sufficient balance");
+    }
+}
+```
+
+
+
+

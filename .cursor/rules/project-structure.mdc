@@ -1,0 +1,382 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Chimera Framework Project Structure
+
+This is a **create-chimera-app** project using the Chimera framework for invariant testing with Echidna, Medusa, Foundry, Halmos and Kontrol.
+
+## Prerequisites 
+
+To make use of the fuzzing/formal verification tools that create-chimera-app supports, you'll need to install one of the following on your local machine: 
+- [Echidna](mdc:https://github.com/crytic/echidna)
+- [Medusa](mdc:https://github.com/crytic/medusa)
+- [Halmos](mdc:https://github.com/a16z/halmos)
+- [Kontrol](mdc:https://github.com/runtimeverification/kontrol?tab=readme-ov-file#fast-installation)
+
+## Project Layout
+```
+├── src/                    # Target contracts to test
+│   └── Counter.sol         # Example contract
+├── test/
+│   ├── Counter.t.sol       # Traditional Foundry tests
+│   └── recon/              # Chimera fuzzing framework
+│       ├── Setup.sol       # Contract deployment & initialization
+│       ├── TargetFunctions.sol  # Handler functions for fuzzing
+│       ├── Properties.sol  # Invariant properties to test
+│       ├── BeforeAfter.sol # State tracking (ghost variables)
+│       ├── CryticTester.sol    # Fuzzer entry point
+│       └── CryticToFoundry.sol # Debug failing tests
+├── echidna.yaml           # Echidna fuzzer configuration
+├── medusa.json            # Medusa fuzzer configuration
+└── foundry.toml           # Foundry configuration
+```
+
+## Core Framework Contracts
+
+### 1. Setup.sol
+**Purpose**: Deploy and initialize target contracts
+**Key Points**:
+- Inherits from `BaseSetup`
+- Contains all contract deployments in `setup()` function
+- Called once before fuzzing begins
+- Example: `counter = new Counter();`
+
+### 2. TargetFunctions.sol  
+**Purpose**: Define handler functions that fuzzers will call
+**Key Points**:
+- Inherits from `BaseTargetFunctions` and `Properties`
+- Contains ONLY functions fuzzers should call
+- Usually non-view/non-pure functions
+- Can include input clamping and inline assertions
+- Example: `function counter_increment() public { counter.increment(); }`
+
+### 3. Properties.sol
+**Purpose**: Define global invariant properties to test
+**Key Points**:
+- Inherits from `BeforeAfter` and `Asserts`
+- Contains assertion-based invariants (preferred)
+- Function names should start with `property_`
+- Example: `function property_number_never_zero() public { t(counter.number() != 0, "number is 0"); }`
+
+### 4. BeforeAfter.sol
+**Purpose**: Track state changes using ghost variables
+**Key Points**:
+- Defines `Vars` struct for state tracking
+- Provides `__before()` and `__after()` functions
+- Used in properties to compare pre/post states
+- Example: `_before.counter_number = counter.number();`
+
+### 5. CryticTester.sol
+**Purpose**: Fuzzer entry point
+**Key Points**:
+- Inherits from `TargetFunctions` and `CryticAsserts`
+- Constructor calls `setup()`
+- This is what fuzzers actually target
+- Example: `contract CryticTester is TargetFunctions, CryticAsserts`
+
+### 6. CryticToFoundry.sol
+**Purpose**: Debug failing tests in Foundry
+**Key Points**:
+- Inherits from `Test`, `TargetFunctions`, `FoundryAsserts`
+- Use to reproduce fuzzer failures
+- Add failing sequences to `test_crytic()` function
+
+## Assertion System
+
+Use Chimera's assertion functions (NOT foundry's):
+- `t(bool, string)` - assert true
+- `eq(uint256, uint256, string)` - assert equal
+- `gt(uint256, uint256, string)` - assert greater than
+- `lt(uint256, uint256, string)` - assert less than
+- `gte(uint256, uint256, string)` - assert greater than or equal
+- `lte(uint256, uint256, string)` - assert less than or equal
+- `between(value, low, high)` - clamp value between bounds
+- `precondition(bool)` - set preconditions
+
+## Running Tests
+
+**Echidna**: `echidna . --contract CryticTester --config echidna.yaml`
+**Medusa**: `medusa fuzz`
+**Foundry**: `forge test --mc CryticToFoundry` (for testing reproducers)
+
+## Key Principles
+
+1. **Only functions in or inherited by TargetFunctions.sol get called by fuzzers**
+2. **Deploy all contracts in Setup.sol, not in constructors**
+3. **Use assertion mode (not property mode) for testing**
+4. **Properties defined in `Properties.sol` not make state changes**
+5. **Use ghost variables for complex state tracking**
+6. **For complex properties that require making state changes to test for specific behavior, define them in `DoomsdayTargets.sol` and use the `stateless` modifier to revert their state changes after the function call**
+
+## Configuration Files
+
+### echidna.yaml
+- **testMode**: Set to `"assertion"` for assertion-based testing
+- **coverage**: Enables coverage-guided fuzzing
+- **corpusDir**: Specifies the directory where the corpus from a fuzzing run will be stored
+- **testLimit**: Number of transactions (override with `--test-limit`)
+- **seqLen**: Max sequence length
+- **shrinkLimit**: Attempts to minimize failing sequences
+
+### medusa.json
+- **assertion testing enabled**: Main testing mode
+- **workers**: Parallel workers for fuzzing
+- **callSequenceLength**: Max calls per sequence
+- **coverageEnabled**: Save coverage-increasing sequences
+- **targetContracts**: Specifies `CryticTester` as target
+- **corpusDirectory**: Specifies the directory where the corpus from a fuzzing run will be stored
+
+## When to Edit Each File
+
+- **Add new target contract**: Update `Setup.sol`
+- **Add new functions to test**: Update `TargetFunctions.sol`
+- **Add new properties**: Update `Properties.sol` or `TargetFunctions.sol`, see [implementing-properties.mdc](mdc:.cursor/rules/implementing-properties.mdc) for specifics
+- **Track new state**: Update `BeforeAfter.sol`
+- **Debug failing test**: Update `CryticToFoundry.sol`
+- **Change fuzzer behavior**: Update config files
+
+## Library Linking (if needed)
+
+For libraries that include external functions, modify configs:
+
+**Echidna**:
+```yaml
+cryticArgs: ["--compile-libraries=(LibraryName,0xaddress)", "--foundry-compile-all"]
+deployContracts: [["0xaddress", "LibraryName"]]
+```
+
+**Medusa**:
+```json
+"compilation": {
+  "platformConfig": {
+    "args": ["--compile-libraries", "(LibraryName,0xaddress)", "--foundry-compile-all"]
+  }
+}
+```
+
+## Quick Reference - File Purposes
+
+| File | Primary Use | Inherits From | Contains |
+|------|-------------|---------------|----------|
+| Setup.sol | Deploy contracts | BaseSetup | `setup()` function |
+| TargetFunctions.sol | Handler functions | BaseTargetFunctions, Properties | Public functions for fuzzers |
+| Properties.sol | Invariants | BeforeAfter, Asserts | `invariant_*()` functions |
+| BeforeAfter.sol | State tracking | Setup | `Vars` struct, `__before()`, `__after()` |
+| CryticTester.sol | Fuzzer entry | TargetFunctions, CryticAsserts | Constructor with `setup()` |
+| CryticToFoundry.sol | Debugging | Test, TargetFunctions, FoundryAsserts | `test_*()` functions |
+
+---
+
+# Chimera Framework
+
+The Chimera framework lets you run invariant tests with Echidna and Medusa that can be easily debugged using Foundry. 
+
+The framework is made up of the following contracts:
+- [`Setup`](mdc:#setup)
+- [`TargetFunctions`](mdc:#targetfunctions)
+- [`Properties`](mdc:#properties) 
+- [`CryticToFoundry`](mdc:#cryticfoundry)
+- [`BeforeAfter`](mdc:#beforeafter)
+- [`CryticTester`](mdc:#cryticTester)
+
+These contracts are in this project by default and should not be deleted as their inheritance structure makes them interdependent. 
+
+## The Contracts 
+
+We'll now look at the role each of the above-mentioned contracts serve in building an extensible and maintainable fuzzing suite. 
+
+### [Setup.sol](mdc:test/recon/Setup.sol)
+
+This contract is used to deploy and initialize the state of your target contracts. It's called by the fuzzer before any of the target functions are called. 
+
+Any contracts you want to track in your fuzzing suite should live here.
+
+In our `create-chimera-app` template project, the `Setup` contract is used to deploy the `Counter` contract:
+```solidity
+abstract contract Setup is BaseSetup {
+    Counter counter;
+
+    function setup() internal virtual override {
+        counter = new Counter();
+    }
+}
+```
+
+### [TargetFunctions.sol](mdc:test/recon/TargetFunctions.sol)
+
+This is perhaps the most important file in your fuzzing suite, it defines the target function handlers that will be called by the fuzzer to manipulate the state of your target contracts. 
+
+**Note: These are the _only_ functions that will be called by the fuzzer**. 
+
+Because these functions have the aim of changing the state of the target contract, they usually only include non-view and non-pure functions. 
+
+Target functions make calls to the target contracts deployed in the `Setup` contract. The handler that wraps the target function allows you to add clamping (reducing the possible fuzzed input values) before the call to the target contract and properties (assertions about the state of the target contract) after the call to the target contract. 
+
+In our `create-chimera-app` template project, the `TargetFunctions` contract is used to define the `increment` and `setNumber` functions:
+
+```solidity
+abstract contract TargetFunctions is
+    BaseTargetFunctions,
+    Properties
+{
+    function counter_increment() public {
+        counter.increment();
+    }
+
+    function counter_setNumber1(uint256 newNumber) public {
+        // clamping can be added here before the call to the target contract
+        // ex: newNumber = newNumber % 100;
+
+        // example assertion test replicating testFuzz_SetNumber
+        try counter.setNumber(newNumber) {
+            if (newNumber != 0) {
+                t(counter.number() == newNumber, "number != newNumber");
+            }
+        } catch {
+            t(false, "setNumber reverts");
+        }
+    }
+
+    function counter_setNumber2(uint256 newNumber) public {
+        // same example assertion test as counter_setNumber1 using ghost variables
+        __before();
+
+        counter.setNumber(newNumber);
+
+        __after();
+
+        if (newNumber != 0) {
+            t(_after.counter_number == newNumber, "number != newNumber");
+        }
+    }
+}
+```
+
+### [Properties.sol](mdc:test/recon/Properties.sol)
+
+This contract is used to define the properties that will be checked after the target functions are called. 
+
+At Recon our preference is to define these as Echidna/Medusa assertion properties but they can also be defined as boolean properties.
+
+In our `create-chimera-app` template project, the `Properties` contract is used to define a property that states that the number can never be 0:
+
+```solidity
+abstract contract Properties is BeforeAfter, Asserts {
+    // example property test
+    function invariant_number_never_zero() public {
+        t(counter.number() != 0, "number is 0");
+    }
+}
+```
+
+### [CryticToFoundry.sol](mdc:test/recon/CryticToFoundry.sol)
+
+This contract is used to debug broken properties by converting the breaking call sequence from Echidna/Medusa into a Foundry unit test. When running jobs on Recon this is done automatically for all broken properties using the fuzzer logs. 
+
+If you are running the fuzzers locally you can use the [Echidna](mdc:https:/getrecon.xyz/tools/echidna) and [Medusa](mdc:https:/getrecon.xyz/tools/medusa) tools on Recon to convert the breaking call sequence from the logs into a Foundry unit test. 
+
+This contract is also useful for debugging issues related to the `setup` function and allows testing individual handlers in isolation to verify if they're working as expected for specific inputs.
+
+In our `create-chimera-app` template project, the `CryticToFoundry` contract doesn't include any reproducer tests because all the properties pass. 
+
+The `test_crytic` function demonstrates the template for adding a reproducer test:
+
+```solidity
+contract CryticToFoundry is Test, TargetFunctions, FoundryAsserts {
+    function setUp() public {
+        setup();
+
+        targetContract(address(counter));
+    }
+
+    function test_crytic() public {
+        // TODO: add failing property tests here for debugging
+    }
+}
+```
+
+### [BeforeAfter.sol](mdc:test/recon/BeforeAfter.sol)
+
+This contract is used to store the state of the target contract before and after the target functions are called in a `Vars` struct. 
+
+These variables can be used in property definitions to check if function calls have modified the state of the target contract in an unexpected way.
+
+In our `create-chimera-app` template project, the `BeforeAfter` contract is used to track the `counter_number` variable:
+
+```solidity
+// ghost variables for tracking state variable values before and after function calls
+abstract contract BeforeAfter is Setup {
+    struct Vars {
+        uint256 counter_number;
+    }
+
+    Vars internal _before;
+    Vars internal _after;
+
+    function __before() internal {
+        _before.counter_number = counter.number();
+    }
+
+    function __after() internal {
+        _after.counter_number = counter.number();
+    }
+}
+```
+
+### [CryticTester.sol](mdc:test/recon/CryticTester.sol)
+
+This is the entrypoint for the fuzzer into the suite. All target functions will be called on an instance of this contract since it inherits from the `TargetFunctions` contract.
+
+In our `create-chimera-app` template project, the `CryticTester` contract is used to call the `counter_increment` and `counter_setNumber1` functions:
+
+```solidity
+// echidna . --contract CryticTester --config echidna.yaml
+// medusa fuzz
+contract CryticTester is TargetFunctions, CryticAsserts {
+    constructor() payable {
+        setup();
+    }
+}
+```
+
+### [Assertions](mdc:https://github.com/Recon-Fuzz/create-chimera-app/blob/main/test/recon/Assertions.sol)
+
+When using assertions from Chimera in your properties, they use a different interface than the standard assertions from foundry's `forge-std`.
+
+The following assertions are available in Chimera's `Asserts` contract:
+
+```solidity
+abstract contract Asserts {
+    // greater than
+    function gt(uint256 a, uint256 b, string memory reason) internal virtual;
+
+    // greater than or equal to
+    function gte(uint256 a, uint256 b, string memory reason) internal virtual;
+
+    // less than
+    function lt(uint256 a, uint256 b, string memory reason) internal virtual;
+
+    // less than or equal to
+    function lte(uint256 a, uint256 b, string memory reason) internal virtual;
+
+    // equal to
+    function eq(uint256 a, uint256 b, string memory reason) internal virtual;
+
+    // true
+    function t(bool b, string memory reason) internal virtual;
+
+    // between uint256
+    function between(uint256 value, uint256 low, uint256 high) internal virtual returns (uint256);
+
+    // between int256
+    function between(int256 value, int256 low, int256 high) internal virtual returns (int256);
+
+    // precondition
+    function precondition(bool p) internal virtual;
+}
+```
+
+
+

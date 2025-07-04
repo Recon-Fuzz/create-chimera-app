@@ -5,10 +5,10 @@ This is a **create-chimera-app** project using the Chimera framework for invaria
 ## Prerequisites 
 
 To make use of the fuzzing/formal verification tools that create-chimera-app supports, you'll need to install one of the following on your local machine: 
-- @Echidna
-- @Medusa
-- @Halmos
-- @Kontrol
+- [Foundry](https://book.getfoundry.sh/getting-started/installation)
+- [Echidna](https://github.com/crytic/echidna?tab=readme-ov-file#installation)
+- [Medusa](https://github.com/crytic/medusa?tab=readme-ov-file#install)
+- [Halmos](https://github.com/a16z/halmos?tab=readme-ov-file#installation)
 
 ## Project Layout
 ```
@@ -127,7 +127,7 @@ Use Chimera's assertion functions (NOT foundry's):
 
 - **Add new target contract**: Update `Setup.sol`
 - **Add new functions to test**: Update `TargetFunctions.sol`
-- **Add new properties**: Update `Properties.sol` or `TargetFunctions.sol`, see @implementing-properties.mdc for specifics
+- **Add new properties**: Update `Properties.sol` or `TargetFunctions.sol`, see [implementing-properties](#implementing-properties) for specifics
 - **Track new state**: Update `BeforeAfter.sol`
 - **Debug failing test**: Update `CryticToFoundry.sol`
 - **Change fuzzer behavior**: Update config files
@@ -169,12 +169,12 @@ deployContracts: [["0xaddress", "LibraryName"]]
 The Chimera framework lets you run invariant tests with Echidna and Medusa that can be easily debugged using Foundry. 
 
 The framework is made up of the following contracts:
-- @`Setup`
-- @`TargetFunctions`
-- @`Properties` 
-- @`CryticToFoundry`
-- @`BeforeAfter`
-- @`CryticTester`
+- @test/recon/Setup.sol
+- @test/recon/TargetFunctions
+- @test/recon/Properties
+- @test/recon/CryticToFoundry
+- @test/recon/BeforeAfter
+- @test/recon/CryticTester
 
 These contracts are in this project by default and should not be deleted as their inheritance structure makes them interdependent. 
 
@@ -182,7 +182,7 @@ These contracts are in this project by default and should not be deleted as thei
 
 We'll now look at the role each of the above-mentioned contracts serve in building an extensible and maintainable fuzzing suite. 
 
-### @Setup.sol
+### @test/recon/Setup.sol
 
 This contract is used to deploy and initialize the state of your target contracts. It's called by the fuzzer before any of the target functions are called. 
 
@@ -199,7 +199,7 @@ abstract contract Setup is BaseSetup {
 }
 ```
 
-### @TargetFunctions.sol
+### @test/recon/TargetFunctions.sol
 
 This is perhaps the most important file in your fuzzing suite, it defines the target function handlers that will be called by the fuzzer to manipulate the state of your target contracts. 
 
@@ -249,7 +249,7 @@ abstract contract TargetFunctions is
 }
 ```
 
-### @Properties.sol
+### @test/recon/Properties.sol
 
 This contract is used to define the properties that will be checked after the target functions are called. 
 
@@ -266,11 +266,11 @@ abstract contract Properties is BeforeAfter, Asserts {
 }
 ```
 
-### @CryticToFoundry.sol
+### @test/recon/CryticToFoundry.sol
 
 This contract is used to debug broken properties by converting the breaking call sequence from Echidna/Medusa into a Foundry unit test. When running jobs on Recon this is done automatically for all broken properties using the fuzzer logs. 
 
-If you are running the fuzzers locally you can use the @Echidna and @Medusa tools on Recon to convert the breaking call sequence from the logs into a Foundry unit test. 
+If you are running the fuzzers locally you can use the [Echidna](https://getrecon.xyz/tools/echidna) and [Medusa](https://getrecon.xyz/tools/medusa) tools on Recon to convert the breaking call sequence from the logs into a Foundry unit test. 
 
 This contract is also useful for debugging issues related to the `setup` function and allows testing individual handlers in isolation to verify if they're working as expected for specific inputs.
 
@@ -292,7 +292,7 @@ contract CryticToFoundry is Test, TargetFunctions, FoundryAsserts {
 }
 ```
 
-### @BeforeAfter.sol
+### test/recon/BeforeAfter.sol
 
 This contract is used to store the state of the target contract before and after the target functions are called in a `Vars` struct. 
 
@@ -320,7 +320,7 @@ abstract contract BeforeAfter is Setup {
 }
 ```
 
-### @CryticTester.sol
+### @test/recon/CryticTester.sol
 
 This is the entrypoint for the fuzzer into the suite. All target functions will be called on an instance of this contract since it inherits from the `TargetFunctions` contract.
 
@@ -336,7 +336,7 @@ contract CryticTester is TargetFunctions, CryticAsserts {
 }
 ```
 
-### @Assertions
+### @lib/chimera/src/Asserts.sol
 
 When using assertions from Chimera in your properties, they use a different interface than the standard assertions from foundry's `forge-std`.
 
@@ -379,9 +379,9 @@ abstract contract Asserts {
 ## Quick Decision Tree
 
 **When implementing a property, ask:**
-1. **What type?** → @Property Types
-2. **Where to implement?** → @Implementation Location 
-3. **How to write?** → @Implementation Patterns
+1. **What type?** → [Property Types](#property-types)
+2. **Where to implement?** → [Implementation Location](#implementation-location)
+3. **How to write?** → [Implementation Patterns](#implementation-patterns)
 
 ## Property Types
 
@@ -581,11 +581,11 @@ function token_transfer(address to, uint256 amount) public {
 ## Quick Navigation
 
 Choose your task:
-- **@Creating Target Functions** → Handler patterns, clamping, disabling
-- **@Setting Up Test Suite** → Deployment, story management, state exploration
-- **@Tracking State Changes** → Before/after state tracking
-- **@Inlined Properties** → Function-specific assertions
-- **@Finding Precision Issues** → Division/precision loss detection
+- **Creating Target Functions** → Handler patterns, clamping, disabling
+- **Setting Up Test Suite** → Deployment, story management, state exploration
+- **Tracking State Changes** → Before/after state tracking
+- **Inlined Properties** → Function-specific assertions
+- **Finding Precision Issues** → Division/precision loss detection
 
 ## Target Functions
 

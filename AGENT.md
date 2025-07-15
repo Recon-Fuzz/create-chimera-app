@@ -928,7 +928,7 @@ echidna . --contract CryticTester --config echidna.yaml
 **3. Create optimization test for worst case:**
 ```solidity
 // For Echidna optimization mode
-function echidna_maximize_rounding_error() public returns (uint256) {
+function echidna_maximize_rounding_error() public returns (int256) {
     // Return the rounding error amount
     return expectedShares > actualSharesBurned ? 
            expectedShares - actualSharesBurned : 

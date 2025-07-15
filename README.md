@@ -1,4 +1,13 @@
 ## Create Chimera App
+
+## One Resource for Invariant Testing
+
+Tutorials, Best Practices, Videos, and the Invariant Testing Bootcamp:
+
+[https://book.getrecon.xyz/](https://book.getrecon.xyz/)
+
+## Table of Contents
+
 - [Prerequisites](#prerequisites)
 - [Usage](#usage)
   - [Build](#build)

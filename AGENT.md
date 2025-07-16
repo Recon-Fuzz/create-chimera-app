@@ -138,7 +138,7 @@ For libraries that include external functions, modify configs:
 
 **Echidna**:
 ```yaml
-cryticArgs: ["--compile-libraries=(LibraryName,0xaddress)", "--foundry-compile-all"]
+cryticArgs: ["--compile-libraries=(LibraryName,0xaddress)"]
 deployContracts: [["0xaddress", "LibraryName"]]
 ```
 
@@ -146,7 +146,7 @@ deployContracts: [["0xaddress", "LibraryName"]]
 ```json
 "compilation": {
   "platformConfig": {
-    "args": ["--compile-libraries", "(LibraryName,0xaddress)", "--foundry-compile-all"]
+    "args": ["--compile-libraries", "(LibraryName,0xaddress)"]
   }
 }
 ```

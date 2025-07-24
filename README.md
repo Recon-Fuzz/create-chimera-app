@@ -95,6 +95,11 @@ You can offload your fuzzing job to Recon to run long duration jobs and share te
 ## Credits
 This template implements the [`EnumerableSet`](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/structs/EnumerableSet.sol) contract from OpenZeppelin and the [`ERC20`](https://github.com/transmissions11/solmate/blob/main/src/tokens/ERC20.sol) contract from Solmate to reduce the number of dependencies and make it simpler to get started.
 
+## Limitations
+
+- Echidna `contractAddr` must be hardcoded due to how Echidna works
+- Medusa uses `deployerAddress` to deploy libraries, burning nonces, as a sidestep we use a random `deployerAddress` and set `CryticTester` address in `predeployedContracts` 
+
 ## Help
 
 If you need help using the template or have question about any of our tools, join the [Recon Discord](https://getrecon.xyz/discord).

@@ -13,7 +13,7 @@ import {TargetFunctions} from "./TargetFunctions.sol";
 // forge test --match-contract CryticToFoundry -vv
 
 // Run Invariant Tests
-//  FOUNDRY_PROFILE=invariants forge test --match-contract CryticToFoundry -vv --show-progress
+// FOUNDRY_PROFILE=invariants forge test --match-contract CryticToFoundry -vv --show-progress
 contract CryticToFoundry is Test, TargetFunctions, FoundryAsserts {
     function setUp() public {
         setup();

@@ -1,3 +1,5 @@
 [global]
 # match tests with the invariant_ prefix
 function = "(check|invariant)_"
+
+contract = "CryticToFoundry"

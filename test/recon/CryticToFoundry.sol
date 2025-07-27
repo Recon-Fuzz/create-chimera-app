@@ -9,7 +9,11 @@ import {Test} from "forge-std/Test.sol";
 import {TargetFunctions} from "./TargetFunctions.sol";
 
 
+// Debug Broken Repros
 // forge test --match-contract CryticToFoundry -vv
+
+// Run Invariant Tests
+//  FOUNDRY_PROFILE=invariants forge test --match-contract CryticToFoundry -vv --show-progress
 contract CryticToFoundry is Test, TargetFunctions, FoundryAsserts {
     function setUp() public {
         setup();

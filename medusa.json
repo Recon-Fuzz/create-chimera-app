@@ -8,7 +8,7 @@
     "corpusDirectory": "medusa",
     "coverageEnabled": true,
     "deploymentOrder": [
-      "CryticTester"
+
     ],
     "targetContracts": [
       "CryticTester"
@@ -16,8 +16,11 @@
     "targetContractsBalances": [
       "0x27b46536c66c8e3000000"
     ],
+    "predeployedContracts": {
+      "CryticTester": "0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496"
+    },
     "constructorArgs": {},
-    "deployerAddress": "0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496",
+    "deployerAddress": "0xf5e4fFeB7d2183B61753AA4074d72E51873C1D0a",
     "senderAddresses": [
       "0x10000",
       "0x20000",

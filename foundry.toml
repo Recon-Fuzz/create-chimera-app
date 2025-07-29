@@ -8,7 +8,7 @@ viaIR = true
 no_match_contract = "CryticTester" ## Skip Echinda / Medusa boilerplate
 
 [invariant]
-runs = 0 # Only flag properties that insta break
+runs = 0 # Only flag properties that break without calls
 
 [profile.invariants]
 ## Custom Profile used to run invariant tests

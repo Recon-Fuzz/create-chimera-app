@@ -20,3 +20,4 @@ echidna
 crytic-export
 slither_results.json
 .medusacache
+/foundry/corpus

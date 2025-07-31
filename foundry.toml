@@ -2,8 +2,23 @@
 src = "src"
 out = "out"
 libs = ["lib"]
-no_match_contract = "CryticTester"
 
-optimizer=false ## Required by Crytic-Comile
+viaIR = true
 
+no_match_contract = "CryticTester" ## Skip Echinda / Medusa boilerplate
+
+[invariant]
+runs = 0 # Only flag properties that break without calls
+
+[profile.invariants]
+## Custom Profile used to run invariant tests
+match_test = ""
+[profile.invariants.invariant]
+runs = 1_000_000 ## Test this param! Generally speaking this needs to be very high!
+corpus_dir = "./foundry/corpus"
+corpus_gzip = false
+corpus_min_mutations = 5
+corpus_min_size = 0
+
+# Learn about chimera: https://book.getrecon.xyz/writing_invariant_tests/chimera_framework.html
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options

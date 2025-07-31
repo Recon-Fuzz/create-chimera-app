@@ -78,6 +78,15 @@ forge test --match-contract CryticToFoundry -vv
 
 You can then use optimization mode to increase the severity of findings as we've described [here](https://book.getrecon.xyz/writing_invariant_tests/optimizing_broken_properties.html).
 
+#### Foundry Invariant Testing
+To run invariant tests directly in Foundry using the built-in invariant testing framework, use the `invariants` profile:
+
+```shell
+FOUNDRY_PROFILE=invariants forge test --match-contract CryticToFoundry -vv
+```
+
+The number of test runs can be modified by the `runs` parameter in the `[profile.invariants.invariant]` section of `foundry.toml`.
+
 ### Halmos Invariant Testing
 This template works out of the box for invariant testing with Halmos.
 

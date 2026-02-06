@@ -28,6 +28,8 @@ To use this template you'll need to have Foundry and at least one fuzzer (Echidn
 - [Medusa](https://github.com/crytic/medusa?tab=readme-ov-file#install)
 - [Halmos](https://github.com/a16z/halmos?tab=readme-ov-file#installation)
 
+> **Note:** This template enables Echidna's symbolic execution by default (`symExec: true`) using [Bitwuzla](https://bitwuzla.github.io/) as the SMT solver. To use this feature, install Bitwuzla by building from [source](https://github.com/bitwuzla/bitwuzla). If you don't have Bitwuzla installed, set `symExec: false` in `echidna.yaml`.
+
 ## How it Works
 
 For a full explainer of the different contracts that make up the Chimera Framework and are used in this template, checkout [this section](https://book.getrecon.xyz/writing_invariant_tests/chimera_framework.html) of the Recon Book.

@@ -1,3 +1,5 @@
+[![By Recon](https://getrecon.xyz/api/badge?type=recon)](https://getrecon.xyz)
+
 ## Create Chimera App
 
 We've synthesized everything you need for invariant testing (tutorials, best practices, videos, and an invariant testing bootcamp) using this template in the [Recon Book](https://book.getrecon.xyz/).
